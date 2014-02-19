@@ -61,10 +61,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning fix this
     if(_searchResults == nil)
     {
         return 0;
+    }
+    else if([_searchResults count] == 0)
+    {
+        return 1;
     }
     else
     {
@@ -85,10 +88,21 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
     
-    // getting the search result
-    SearchResult *searchResult = _searchResults[indexPath.row];
-    cell.textLabel.text = searchResult.name;
-    cell.detailTextLabel.text = searchResult.artistName;
+    // before performing a search the array is not allocated
+    if([_searchResults count] == 0)
+    {
+        cell.textLabel.text = @"(Nothing found)";
+        cell.detailTextLabel.text = @"";
+    }
+    
+    // if the array has results
+    else
+    {
+        // getting the search result
+        SearchResult *searchResult = _searchResults[indexPath.row];
+        cell.textLabel.text = searchResult.name;
+        cell.detailTextLabel.text = searchResult.artistName;
+    }
     
     return cell;
 }
@@ -106,13 +120,16 @@
     
     _searchResults = [NSMutableArray arrayWithCapacity:10];
     
-    for(int i = 0; i < 3; i++)
+    if(![searchBar.text isEqualToString:@"fcp"])
     {
-        SearchResult *searchResult = [[SearchResult alloc] init];
-        searchResult.name = [NSString stringWithFormat:@"Fake result %d for", i];
-        searchResult.artistName = searchBar.text;
-        
-        [_searchResults addObject:searchResult];
+        for(int i = 0; i < 3; i++)
+        {
+            SearchResult *searchResult = [[SearchResult alloc] init];
+            searchResult.name = [NSString stringWithFormat:@"Fake result %d for", i];
+            searchResult.artistName = searchBar.text;
+            
+            [_searchResults addObject:searchResult];
+        }
     }
     
     [self.tableView reloadData];
@@ -126,6 +143,31 @@
 {
     // positioning the search bar attached to status bar
     return UIBarPositionTopAttached;
+}
+
+
+# pragma mark - UITableViewDelegate
+
+
+// deselects a tapped row with an animation
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+
+// ensures that we can only select rows with actual search results
+// (this way we can't pick a cell that shows 'no results found')
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if([_searchResults count] == 0)
+    {
+        return nil;
+    }
+    else
+    {
+        return indexPath;
+    }
 }
 
 @end
