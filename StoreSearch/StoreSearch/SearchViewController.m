@@ -8,12 +8,19 @@
 
 #import "SearchViewController.h"
 
-@interface SearchViewController ()
+// delegates: UITableViewDataSource and UITableViewDelegate (because this isn't a UITableViewController)
+// delegate: UISearchBarDelegate (to handle searches)
+@interface SearchViewController ()  <UITableViewDataSource,
+                                    UITableViewDelegate,
+                                    UISearchBarDelegate>
+
 @property(nonatomic, weak) IBOutlet UISearchBar *searchBar;
 @property(nonatomic, weak) IBOutlet UITableView *tableView;
+
 @end
 
 @implementation SearchViewController
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -24,6 +31,7 @@
     return self;
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -33,10 +41,37 @@
     self.tableView.contentInset = UIEdgeInsetsMake(64.0, 0.0, 0.0, 0.0);
 }
 
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+# pragma mark - UITableViewDataSource
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+#warning fix this
+    return 0;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+#warning fix this
+    return 0;
+}
+
+
+# pragma mark - UISearchBarDelegate
+
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    NSLog(@"The search text is: '%@'", searchBar.text);
 }
 
 @end
