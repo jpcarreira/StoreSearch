@@ -7,7 +7,15 @@
 //
 
 #import "SearchViewController.h"
+
+// model class representing search results
 #import "SearchResult.h"
+
+// custom class representing the search cell designed in it's own nib
+#import "SearchResultCell.h"
+
+// defining the cell identifier
+static NSString * const searchResultIdentifier = @"SearchResultCell";
 
 // delegates: UITableViewDataSource and UITableViewDelegate (because this isn't a UITableViewController)
 // delegate: UISearchBarDelegate (to handle searches)
@@ -46,6 +54,13 @@
     // sizing the table view so avoid having the search bar hiding the first row
     // (by adding 64 points: 20 for the status bar and 44 for the search bar)
     self.tableView.contentInset = UIEdgeInsetsMake(64.0, 0.0, 0.0, 0.0);
+    
+    // register the nib file for the custom search result cell
+    UINib *cellNib = [UINib nibWithNibName:searchResultIdentifier bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:searchResultIdentifier];
+    
+    // setting the heigth equal to the cell designed in the xib
+    self.tableView.rowHeight = 80;
 }
 
 
@@ -79,20 +94,22 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *cellIdentifier = @"SearchResultCell";
+    // using our custom name 'SearchResultCell' (this cell has its own nib file)
+    // (further down we'll use SearchResultCell properties representing the labels and image view
+    // instead of the "traditional" textLabel or detailTextLabel because this would make text to overlap
+    // as both are properties of UITableViewCell and not from SearchResultCell)
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    SearchResultCell *cell = (SearchResultCell *)[tableView dequeueReusableCellWithIdentifier:searchResultIdentifier];
     
-    if(cell == nil)
-    {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-    }
+    // the above line is equivalent to
+    //SearchResultCell *cell = (SearchResultCell *)[tableView dequeueReusableCellWithIdentifier:@"SearchResultCell" forIndexPath:indexPath];
+    // passing along the indexPath will work in this case because we registered the nib in viewDidLoad
     
     // before performing a search the array is not allocated
     if([_searchResults count] == 0)
     {
-        cell.textLabel.text = @"(Nothing found)";
-        cell.detailTextLabel.text = @"";
+        cell.nameLabel.text = @"(Nothing found)";
+        cell.artistNameLabel.text = @"";
     }
     
     // if the array has results
@@ -100,8 +117,8 @@
     {
         // getting the search result
         SearchResult *searchResult = _searchResults[indexPath.row];
-        cell.textLabel.text = searchResult.name;
-        cell.detailTextLabel.text = searchResult.artistName;
+        cell.nameLabel.text = searchResult.name;
+        cell.artistNameLabel.text = searchResult.artistName;
     }
     
     return cell;
