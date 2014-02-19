@@ -7,6 +7,7 @@
 //
 
 #import "SearchViewController.h"
+#import "SearchResult.h"
 
 // delegates: UITableViewDataSource and UITableViewDelegate (because this isn't a UITableViewController)
 // delegate: UISearchBarDelegate (to handle searches)
@@ -81,10 +82,13 @@
     
     if(cell == nil)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
     
-    cell.textLabel.text = _searchResults[indexPath.row];
+    // getting the search result
+    SearchResult *searchResult = _searchResults[indexPath.row];
+    cell.textLabel.text = searchResult.name;
+    cell.detailTextLabel.text = searchResult.artistName;
     
     return cell;
 }
@@ -104,12 +108,14 @@
     
     for(int i = 0; i < 3; i++)
     {
-        [_searchResults addObject:[NSString stringWithFormat:@"Fake result %d: '%@'", i, searchBar.text]];
+        SearchResult *searchResult = [[SearchResult alloc] init];
+        searchResult.name = [NSString stringWithFormat:@"Fake result %d for", i];
+        searchResult.artistName = searchBar.text;
+        
+        [_searchResults addObject:searchResult];
     }
     
     [self.tableView reloadData];
-    
-    NSLog(@"The search text is: '%@'", searchBar.text);
 }
 
 

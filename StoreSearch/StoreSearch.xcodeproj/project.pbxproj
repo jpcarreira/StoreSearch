@@ -21,6 +21,7 @@
 		62B7A68718B4DE9300B54F14 /* StoreSearchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 62B7A68618B4DE9300B54F14 /* StoreSearchTests.m */; };
 		62B7A69318B4E28D00B54F14 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 62B7A69118B4E28D00B54F14 /* SearchViewController.m */; };
 		62B7A69418B4E28D00B54F14 /* SearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 62B7A69218B4E28D00B54F14 /* SearchViewController.xib */; };
+		62B7A69A18B5154400B54F14 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 62B7A69918B5154400B54F14 /* SearchResult.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,8 @@
 		62B7A69018B4E28D00B54F14 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		62B7A69118B4E28D00B54F14 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		62B7A69218B4E28D00B54F14 /* SearchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchViewController.xib; sourceTree = "<group>"; };
+		62B7A69818B5154400B54F14 /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResult.h; sourceTree = "<group>"; };
+		62B7A69918B5154400B54F14 /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResult.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +122,8 @@
 				62B7A69018B4E28D00B54F14 /* SearchViewController.h */,
 				62B7A69118B4E28D00B54F14 /* SearchViewController.m */,
 				62B7A69218B4E28D00B54F14 /* SearchViewController.xib */,
+				62B7A69818B5154400B54F14 /* SearchResult.h */,
+				62B7A69918B5154400B54F14 /* SearchResult.m */,
 			);
 			path = StoreSearch;
 			sourceTree = "<group>";
@@ -251,6 +256,7 @@
 			files = (
 				62B7A66C18B4DE9300B54F14 /* AppDelegate.m in Sources */,
 				62B7A69318B4E28D00B54F14 /* SearchViewController.m in Sources */,
+				62B7A69A18B5154400B54F14 /* SearchResult.m in Sources */,
 				62B7A66818B4DE9300B54F14 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
