@@ -7,12 +7,22 @@
 //
 
 #import "AppDelegate.h"
+#import "SearchViewController.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    // creating a UIWindow object
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    // assigning a root view controller to the window
+    self.searchViewController = [[SearchViewController alloc] initWithNibName:@"SearchViewController" bundle:nil];
+    self.window.rootViewController = self.searchViewController;
+    
+    // making the window visible
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 							
