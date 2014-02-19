@@ -11,10 +11,26 @@
 
 @implementation AppDelegate
 
+
+// custom appearance
+-(void)customizeAppearance
+{
+    // UISearchBar
+    UIColor *barTintColor = [UIColor colorWithRed:20.0/255.0f green:160.0/255.0f blue:160.0/255.0f alpha:1.0f];
+    [[UISearchBar appearance] setBarTintColor:barTintColor];
+    
+    // window
+    self.window.tintColor = [UIColor colorWithRed:10.0/255.0f green:80.0/255.0f blue:80.0/255.0f alpha:1.0f];
+}
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // creating a UIWindow object
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    // customizing appearance (this method call must be exactly after creating the UIWindow object)
+    [self customizeAppearance];
     
     // assigning a root view controller to the window
     self.searchViewController = [[SearchViewController alloc] initWithNibName:@"SearchViewController" bundle:nil];
