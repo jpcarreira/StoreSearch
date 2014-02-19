@@ -20,6 +20,12 @@
 @end
 
 @implementation SearchViewController
+{
+    // ivars
+    
+    // ivar for "fake data"
+    NSMutableArray *_searchResults;
+}
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -55,14 +61,32 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 #warning fix this
-    return 0;
+    if(_searchResults == nil)
+    {
+        return 0;
+    }
+    else
+    {
+        return [_searchResults count];
+    }
+    
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-#warning fix this
-    return 0;
+    static NSString *cellIdentifier = @"SearchResultCell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+    if(cell == nil)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+    }
+    
+    cell.textLabel.text = _searchResults[indexPath.row];
+    
+    return cell;
 }
 
 
@@ -71,7 +95,31 @@
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    // dismissing the keyboard
+    [searchBar resignFirstResponder];
+    
+#warning fake data
+    
+    _searchResults = [NSMutableArray arrayWithCapacity:10];
+    
+    for(int i = 0; i < 3; i++)
+    {
+        [_searchResults addObject:[NSString stringWithFormat:@"Fake result %d: '%@'", i, searchBar.text]];
+    }
+    
+    [self.tableView reloadData];
+    
     NSLog(@"The search text is: '%@'", searchBar.text);
+}
+
+
+# pragma mark - UISearchBarDelegate protocol
+
+
+- (UIBarPosition)positionForBar:(id <UIBarPositioning>)bar
+{
+    // positioning the search bar attached to status bar
+    return UIBarPositionTopAttached;
 }
 
 @end
