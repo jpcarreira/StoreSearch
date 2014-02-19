@@ -69,6 +69,9 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
     
     // setting the heigth equal to the cell designed in the xib
     self.tableView.rowHeight = 80;
+    
+    // making the keyboard immediatly available
+    [self.searchBar becomeFirstResponder];
 }
 
 
