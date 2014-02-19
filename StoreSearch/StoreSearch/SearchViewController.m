@@ -9,7 +9,8 @@
 #import "SearchViewController.h"
 
 @interface SearchViewController ()
-
+@property(nonatomic, weak) IBOutlet UISearchBar *searchBar;
+@property(nonatomic, weak) IBOutlet UITableView *tableView;
 @end
 
 @implementation SearchViewController
@@ -26,7 +27,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    
+    // sizing the table view so avoid having the search bar hiding the first row
+    // (by adding 64 points: 20 for the status bar and 44 for the search bar)
+    self.tableView.contentInset = UIEdgeInsetsMake(64.0, 0.0, 0.0, 0.0);
 }
 
 - (void)didReceiveMemoryWarning
