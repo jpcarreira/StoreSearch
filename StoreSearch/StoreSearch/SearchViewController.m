@@ -14,8 +14,12 @@
 // custom class representing the search cell designed in it's own nib
 #import "SearchResultCell.h"
 
-// defining the cell identifier
+// defining the cell identifier for the search result cell
 static NSString * const searchResultIdentifier = @"SearchResultCell";
+
+// defining the cell identifier for the nothing found result cell
+static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
+
 
 // delegates: UITableViewDataSource and UITableViewDelegate (because this isn't a UITableViewController)
 // delegate: UISearchBarDelegate (to handle searches)
@@ -59,6 +63,10 @@ static NSString * const searchResultIdentifier = @"SearchResultCell";
     UINib *cellNib = [UINib nibWithNibName:searchResultIdentifier bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:searchResultIdentifier];
     
+    // registering the nib file for the nothing found cell
+    cellNib = [UINib nibWithNibName:nothingFoundIdentifier bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:nothingFoundIdentifier];
+    
     // setting the heigth equal to the cell designed in the xib
     self.tableView.rowHeight = 80;
 }
@@ -99,29 +107,26 @@ static NSString * const searchResultIdentifier = @"SearchResultCell";
     // instead of the "traditional" textLabel or detailTextLabel because this would make text to overlap
     // as both are properties of UITableViewCell and not from SearchResultCell)
     
-    SearchResultCell *cell = (SearchResultCell *)[tableView dequeueReusableCellWithIdentifier:searchResultIdentifier];
-    
+    // SearchResultCell *cell = (SearchResultCell *)[tableView dequeueReusableCellWithIdentifier:searchResultIdentifier];
     // the above line is equivalent to
     //SearchResultCell *cell = (SearchResultCell *)[tableView dequeueReusableCellWithIdentifier:@"SearchResultCell" forIndexPath:indexPath];
     // passing along the indexPath will work in this case because we registered the nib in viewDidLoad
     
-    // before performing a search the array is not allocated
+    // returning a "nothing found" cell if the array is empty
     if([_searchResults count] == 0)
     {
-        cell.nameLabel.text = @"(Nothing found)";
-        cell.artistNameLabel.text = @"";
+        return [tableView dequeueReusableCellWithIdentifier:nothingFoundIdentifier forIndexPath:indexPath];
     }
-    
-    // if the array has results
+    // with at least one search result we return a "serch result" cell
     else
     {
-        // getting the search result
+        SearchResultCell *cell = (SearchResultCell *)[tableView dequeueReusableCellWithIdentifier:searchResultIdentifier forIndexPath:indexPath];
+        
         SearchResult *searchResult = _searchResults[indexPath.row];
         cell.nameLabel.text = searchResult.name;
         cell.artistNameLabel.text = searchResult.artistName;
+        return cell;
     }
-    
-    return cell;
 }
 
 
