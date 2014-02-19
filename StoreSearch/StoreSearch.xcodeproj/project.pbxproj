@@ -25,6 +25,7 @@
 		62B7A69C18B51E5100B54F14 /* SearchResultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 62B7A69B18B51E5100B54F14 /* SearchResultCell.xib */; };
 		62B7A69F18B5222300B54F14 /* SearchResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 62B7A69E18B5222300B54F14 /* SearchResultCell.m */; };
 		62B7A6A318B533AA00B54F14 /* NothingFoundCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 62B7A6A218B533AA00B54F14 /* NothingFoundCell.xib */; };
+		62B7A6A618B539DF00B54F14 /* NothingFoundCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 62B7A6A518B539DF00B54F14 /* NothingFoundCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,8 @@
 		62B7A69D18B5222300B54F14 /* SearchResultCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultCell.h; sourceTree = "<group>"; };
 		62B7A69E18B5222300B54F14 /* SearchResultCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResultCell.m; sourceTree = "<group>"; };
 		62B7A6A218B533AA00B54F14 /* NothingFoundCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NothingFoundCell.xib; sourceTree = "<group>"; };
+		62B7A6A418B539DF00B54F14 /* NothingFoundCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NothingFoundCell.h; sourceTree = "<group>"; };
+		62B7A6A518B539DF00B54F14 /* NothingFoundCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NothingFoundCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +138,8 @@
 				62B7A69D18B5222300B54F14 /* SearchResultCell.h */,
 				62B7A69E18B5222300B54F14 /* SearchResultCell.m */,
 				62B7A6A218B533AA00B54F14 /* NothingFoundCell.xib */,
+				62B7A6A418B539DF00B54F14 /* NothingFoundCell.h */,
+				62B7A6A518B539DF00B54F14 /* NothingFoundCell.m */,
 			);
 			path = StoreSearch;
 			sourceTree = "<group>";
@@ -269,6 +274,7 @@
 			files = (
 				62B7A66C18B4DE9300B54F14 /* AppDelegate.m in Sources */,
 				62B7A69318B4E28D00B54F14 /* SearchViewController.m in Sources */,
+				62B7A6A618B539DF00B54F14 /* NothingFoundCell.m in Sources */,
 				62B7A69F18B5222300B54F14 /* SearchResultCell.m in Sources */,
 				62B7A69A18B5154400B54F14 /* SearchResult.m in Sources */,
 				62B7A66818B4DE9300B54F14 /* main.m in Sources */,
