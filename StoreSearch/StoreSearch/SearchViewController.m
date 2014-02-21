@@ -144,6 +144,28 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
 }
 
 
+// parses the dictionary as the iTunes store as different json data structures according to the products
+// the products will be distinguished according to 'kind' and 'wrapperType'
+-(void)parseDictionary:(NSDictionary *)dictionary
+{
+    // the key 'results' corresponds to an array
+    NSArray *array = dictionary[@"results"];
+    
+    // making sure the key 'results' actually exists
+    if(array == nil)
+    {
+        NSLog(@"Expected 'results' array");
+        return;
+    }
+    
+    // printing results
+    for(NSDictionary *resultDict in array)
+    {
+        NSLog(@"WrapperType: %@, kind: %@", resultDict[@"wrapperType"], resultDict[@"kind"]);
+    }
+}
+
+
 // handles network errors
 -(void)showNetworkError
 {
@@ -247,7 +269,10 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
             return;
         }
         
-        NSLog(@"Dictionary '%@'", dictionary);
+        // we need to parse the dictionary as the iTunes store as different json data structures according to the product
+        [self parseDictionary:dictionary];
+        
+        //NSLog(@"Dictionary '%@'", dictionary);
         
         [self.tableView reloadData];
     }
