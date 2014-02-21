@@ -10,4 +10,10 @@
 
 @implementation SearchResult
 
+// compares name between 2 SearchResult objects
+-(NSComparisonResult)compareName:(SearchResult *)other
+{
+    return [self.name localizedStandardCompare:other.name];
+}
+
 @end

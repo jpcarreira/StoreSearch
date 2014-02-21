@@ -165,11 +165,26 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
         
         SearchResult *searchResult;
         
-        // getting 'wrapperType'
+        // getting 'wrapperType' and 'kind' (ebooks don't have a 'wrapper type' so we need to use 'kind' to identify them)
         NSString *wrapperType = resultDict[@"wrapperType"];
+        NSString *kind = resultDict[@"kind"];
+        
+        // calling the respective parsing method
         if([wrapperType isEqualToString:@"track"])
         {
             searchResult = [self parseTrack:resultDict];
+        }
+        else if([wrapperType isEqualToString:@"audiobook"])
+        {
+            searchResult = [self parseAudioBook:resultDict];
+        }
+        else if([wrapperType isEqualToString:@"software"])
+        {
+            searchResult = [self parseSoftware:resultDict];
+        }
+        else if([kind isEqualToString:@"ebook"])
+        {
+            searchResult = [self parseEBook:resultDict];
         }
         
         // adding to array with results
@@ -197,6 +212,69 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
     searchResult.price = dictionary[@"trackPrice"];
     searchResult.currency = dictionary[@"currency"];
     searchResult.genre = dictionary[@"primaryGenreName"];
+    
+    return searchResult;
+}
+
+
+// parsing audio books
+-(SearchResult *)parseAudioBook:(NSDictionary *)dictionary
+{
+    SearchResult *searchResult = [[SearchResult alloc] init];
+    
+    // parsing desired info from tracks dictionary
+    searchResult.name = dictionary[@"collectionName"];
+    searchResult.artistName = dictionary[@"artistName"];
+    searchResult.artworkURL60 = dictionary[@"artworkUrl60"];
+    searchResult.artworkURL100 = dictionary[@"artworkUrl100"];
+    searchResult.storeURL = dictionary[@"collectionViewUrl"];
+    // audiobooks don't have a kind field so we have to set it manually
+    searchResult.kind = @"audiobook";
+    searchResult.price = dictionary[@"collectionPrice"];
+    searchResult.currency = dictionary[@"currency"];
+    searchResult.genre = dictionary[@"primaryGenreName"];
+    
+    return searchResult;
+}
+
+
+// parsing apps
+-(SearchResult *)parseSoftware:(NSDictionary *)dictionary
+{
+    SearchResult *searchResult = [[SearchResult alloc] init];
+    
+    // parsing desired info from tracks dictionary
+    searchResult.name = dictionary[@"trackName"];
+    searchResult.artistName = dictionary[@"artistName"];
+    searchResult.artworkURL60 = dictionary[@"artworkUrl60"];
+    searchResult.artworkURL100 = dictionary[@"artworkUrl100"];
+    searchResult.storeURL = dictionary[@"trackViewUrl"];
+    searchResult.kind = dictionary[@"kind"];
+    searchResult.price = dictionary[@"price"];
+    searchResult.currency = dictionary[@"currency"];
+    searchResult.genre = dictionary[@"primaryGenreName"];
+    
+    return searchResult;
+}
+
+
+// parsing ebooks
+-(SearchResult *)parseEBook:(NSDictionary *)dictionary
+{
+    SearchResult *searchResult = [[SearchResult alloc] init];
+    
+    // parsing desired info from tracks dictionary
+    searchResult.name = dictionary[@"trackName"];
+    searchResult.artistName = dictionary[@"artistName"];
+    searchResult.artworkURL60 = dictionary[@"artworkUrl60"];
+    searchResult.artworkURL100 = dictionary[@"artworkUrl100"];
+    searchResult.storeURL = dictionary[@"trackViewUrl"];
+    searchResult.kind = dictionary[@"kind"];
+    searchResult.price = dictionary[@"price"];
+    searchResult.currency = dictionary[@"currency"];
+    // ebooks don't have a 'primaryGenreName' but an array of genres so we have to set it manually
+    // (we picks all elements in the array and join them in a single string)
+    searchResult.genre = [(NSArray *)dictionary[@"genre"] componentsJoinedByString:@", "];
     
     return searchResult;
 }
@@ -364,6 +442,9 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
         
         // we need to parse the dictionary as the iTunes store as different json data structures according to the product
         [self parseDictionary:dictionary];
+        
+        // alphabetical sort (using compareName on SearchResult class)
+        [_searchResults sortUsingSelector:@selector(compareName:)];
         
         //NSLog(@"Dictionary '%@'", dictionary);
         
