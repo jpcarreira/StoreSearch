@@ -14,6 +14,8 @@
 // custom class representing the search cell designed in it's own nib
 #import "SearchResultCell.h"
 
+#import <AFNetworking/AFNetworking.h>
+
 // defining the cell identifier for the search result cell
 static NSString * const searchResultIdentifier = @"SearchResultCell";
 
@@ -44,14 +46,18 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     
     // ivar to check is the app is loading data
     BOOL _isLoading;
+    
+    // ivar for NSOperation
+    NSOperationQueue *_queue;
 }
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
+    if (self)
+    {
+        _queue = [[NSOperationQueue alloc] init];
     }
     return self;
 }
@@ -103,54 +109,6 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     NSString *urlString = [NSString stringWithFormat:@"http://itunes.apple.com/search?term=%@&limit=200", escapedSearchText];
     NSURL *url = [NSURL URLWithString:urlString];
     return url;
-}
-
-
-// returns the search result based on url
--(NSString *)performStoreRequestWithURL:(NSURL *)url
-{
-    NSError *error;
-    
-    // calling a convenience constructor of NSString that returns a new NSString object with the data it receives from the server
-    // (if something goes wrong the string is nil in the error variable says what went wrong)
-    NSString *resultString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error];
-    
-    // checking for errors
-    if(resultString == nil)
-    {
-        NSLog(@"Download Error: %@", error);
-        return nil;
-    }
-    
-    return resultString;
-}
-
-
-// parses json data
--(NSDictionary *)parseJson:(NSString *)jsonString
-{
-    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *error;
-    
-    // converts JSON search results to a dictionary
-    id resultObject = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-    
-    if(resultObject == nil)
-    {
-        NSLog(@"JSON error: %@", error);
-        return nil;
-    }
-    
-    // defensive programming against any unexpected change on the server side
-    // (just because serialization was able to turn the string into a valid ObjC object, it doesn't mean it will return a NSDictionary)
-    // (that's why we use 'id' for resultObject and then here we check if it's a dictionary, because it can return an NSArray or NSNumber)
-    if(![resultObject isKindOfClass:[NSDictionary class]])
-    {
-        NSLog(@"JSON error: expected dictionary");
-        return nil;
-    }
-    
-    return resultObject;
 }
 
 
@@ -429,83 +387,52 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 
 # pragma mark - UISearchBarDelegate
 
-
+// with AFNetworking
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    
-    // only performs searchs if there's text
     if([searchBar.text length] > 0)
     {
-        // dismissing the keyboard
         [searchBar resignFirstResponder];
         
-        // setting the flag
         _isLoading = YES;
         [self.tableView reloadData];
         
-        // initializing the ivar containing the search results
         _searchResults = [NSMutableArray arrayWithCapacity:10];
+     
+        // creating the NSURL object and putting it in NSURLRequest
+        NSURL *url = [self urlWithSearchText:searchBar.text];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
         
-        // referencing a medium priority queue
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        // AFHTTPRequestOperation takes 2 blocks
+        AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        operation.responseSerializer = [AFJSONResponseSerializer serializer];
         
-        // block to download data from webservice
-        dispatch_async(queue,
-        ^{
-            // building the URL from the text user inputs in the search bar
-            NSURL *url = [self urlWithSearchText:searchBar.text];
-            //NSLog(@"URL '%@'", url);
-            
-            // json string containing the outcome of the search
-            NSString *jsonString = [self performStoreRequestWithURL:url];
-            //NSLog(@"Received json string '%@'", jsonString);
-            
-            // checking for errors in json string
-            if(jsonString == nil)
-            {
-                // error handling shouldn't be done inside a queue!
-                // UIKit code must be performed ALWAYS in the main thread
-                // (the line below was used only this code was on the main thread)
-                //[self showNetworkError];
-                dispatch_async(dispatch_get_main_queue(),
-                ^{
-                    [self showNetworkError];
-                });
-                return;
-            }
-            
-            // parsing json
-            NSDictionary *dictionary = [self parseJson:jsonString];
-            
-            // checking for errors in json parsing
-            if(dictionary == nil)
-            {
-                // error handling shouldn't be done inside a queue!
-                // UIKit code must be performed ALWAYS in the main thread
-                // (the line below was used only this code was on the main thread)
-                //[self showNetworkError];
-                dispatch_async(dispatch_get_main_queue(),
-                ^{
-                    [self showNetworkError];
-                });
-                return;
-            }
-            
-            // we need to parse the dictionary as the iTunes store as different json data structures according to the product
-            [self parseDictionary:dictionary];
-            
-            // alphabetical sort (using compareName on SearchResult class)
-            [_searchResults sortUsingSelector:@selector(compareName:)];
-            
-            //NSLog(@"Dictionary '%@'", dictionary);
-            
-            dispatch_async(dispatch_get_main_queue(),
-            ^{
-                // setting the flag
-                _isLoading = NO;
-                [self.tableView reloadData];
-            });
-        });
+        // both blocks can call UIKit methods because they run in the main thread
+        // (check AFNetworking documentation)
+        [operation setCompletionBlockWithSuccess:
+         // success block
+         ^(AFHTTPRequestOperation *operation, id responseObject)
+         {
+             // taking the responseObject and parsing it
+             [self parseDictionary:responseObject];
+             [_searchResults sortUsingSelector:@selector(compareName:)];
+             
+             _isLoading = NO;
+             [self.tableView reloadData];
+         }
+         // failure block (when there's a network error or not a valid JSON object)
+        failure:^(AFHTTPRequestOperation *operation, NSError *error)
+         {
+             // feedback to user if something goes wrong
+             [self showNetworkError];
+             
+             _isLoading = NO;
+             [self.tableView reloadData];
+         }];
+        
+        // this is a different queue from GCD (here we work with a NSOperationQueue object)
+        // (this requires an instance variable that must be initialized in the init method)
+        [_queue addOperation:operation];
     }
 }
 
