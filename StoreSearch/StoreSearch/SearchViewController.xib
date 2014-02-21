@@ -7,6 +7,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchViewController">
             <connections>
                 <outlet property="searchBar" destination="2TN-Np-Muq" id="QOE-1a-DFi"/>
+                <outlet property="segmentedControl" destination="tz7-MD-Vqc" id="Hjg-rh-eGJ"/>
                 <outlet property="tableView" destination="rIU-DL-Ops" id="MYp-RY-Usd"/>
                 <outlet property="view" destination="1" id="3"/>
             </connections>

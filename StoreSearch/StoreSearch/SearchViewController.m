@@ -103,13 +103,33 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 
 
 // builds a url from standard string to query iTunes webservice
--(NSURL *)urlWithSearchText:(NSString *)searchText
+-(NSURL *)urlWithSearchText:(NSString *)searchText category:(NSInteger)category
 {
+    // getting the category according to segmented control index
+    NSString *categoryName;
+    switch(category)
+    {
+        case 0:
+            categoryName = @"";
+            break;
+        case 1:
+            categoryName = @"musicTrack";
+            break;
+        case 2:
+            categoryName = @"software";
+            break;
+        case 3:
+            categoryName = @"ebook";
+            break;
+    }
+    
     // encoding URL from search text (UTF8)
     NSString *escapedSearchText = [searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *urlString = [NSString stringWithFormat:@"http://itunes.apple.com/search?term=%@&limit=200", escapedSearchText];
-    NSURL *url = [NSURL URLWithString:urlString];
-    return url;
+    NSString *urlString = [NSString stringWithFormat:@"http://itunes.apple.com/search?term=%@&limit=200&entity=%@", escapedSearchText, categoryName];
+    
+    //NSLog(@"Index=%i\nCategory='%@'\nURL = '%@'", category, categoryName, urlString);
+    
+    return [NSURL URLWithString:urlString];
 }
 
 
@@ -325,7 +345,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         _searchResults = [NSMutableArray arrayWithCapacity:10];
         
         // creating the NSURL object and putting it in NSURLRequest
-        NSURL *url = [self urlWithSearchText:self.searchBar.text];
+        NSURL *url = [self urlWithSearchText:self.searchBar.text category:self.segmentedControl.selectedSegmentIndex];
         NSURLRequest *request = [NSURLRequest requestWithURL:url];
         
         // AFHTTPRequestOperation takes 2 blocks
