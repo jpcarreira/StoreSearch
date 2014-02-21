@@ -308,11 +308,75 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 }
 
 
+// search logic
+-(void)performSearch
+{
+    if([self.searchBar.text length] > 0)
+    {
+        [self.searchBar resignFirstResponder];
+        
+        // canceling any previous ongoing request
+        // (this will invoke the failure block of AFNetworking)
+        [_queue cancelAllOperations];
+        
+        _isLoading = YES;
+        [self.tableView reloadData];
+        
+        _searchResults = [NSMutableArray arrayWithCapacity:10];
+        
+        // creating the NSURL object and putting it in NSURLRequest
+        NSURL *url = [self urlWithSearchText:self.searchBar.text];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        
+        // AFHTTPRequestOperation takes 2 blocks
+        AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        operation.responseSerializer = [AFJSONResponseSerializer serializer];
+        
+        // both blocks can call UIKit methods because they run in the main thread
+        // (check AFNetworking documentation)
+        [operation setCompletionBlockWithSuccess:
+         // success block
+         ^(AFHTTPRequestOperation *operation, id responseObject)
+         {
+             // taking the responseObject and parsing it
+             [self parseDictionary:responseObject];
+             [_searchResults sortUsingSelector:@selector(compareName:)];
+             
+             _isLoading = NO;
+             [self.tableView reloadData];
+         }
+         // failure block (when there's a network error or not a valid JSON object)
+                                         failure:^(AFHTTPRequestOperation *operation, NSError *error)
+         {
+             //this block is also called when the operations is cancelled so we need to prevent error display in this case
+             if(operation.isCancelled)
+             {
+                 return;
+             }
+             
+             // feedback to user if something goes wrong
+             [self showNetworkError];
+             
+             _isLoading = NO;
+             [self.tableView reloadData];
+         }];
+        
+        // this is a different queue from GCD (here we work with a NSOperationQueue object)
+        // (this requires an instance variable that must be initialized in the init method)
+        [_queue addOperation:operation];
+    }
+}
+
+
 # pragma mark - Action methods
 
 -(IBAction)segmentChanged:(UISegmentedControl *)sender
 {
-    NSLog(@"Segment changed: %d", sender.selectedSegmentIndex + 1);
+    // only searches if there's a previous search
+    if(_searchResults != nil)
+    {
+        [self performSearch];
+    }
 }
 
 
@@ -400,60 +464,8 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 // with AFNetworking
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    if([searchBar.text length] > 0)
-    {
-        [searchBar resignFirstResponder];
-        
-        // canceling any previous ongoing request
-        // (this will invoke the failure block of AFNetworking)
-        [_queue cancelAllOperations];
-        
-        _isLoading = YES;
-        [self.tableView reloadData];
-        
-        _searchResults = [NSMutableArray arrayWithCapacity:10];
-     
-        // creating the NSURL object and putting it in NSURLRequest
-        NSURL *url = [self urlWithSearchText:searchBar.text];
-        NSURLRequest *request = [NSURLRequest requestWithURL:url];
-        
-        // AFHTTPRequestOperation takes 2 blocks
-        AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-        operation.responseSerializer = [AFJSONResponseSerializer serializer];
-        
-        // both blocks can call UIKit methods because they run in the main thread
-        // (check AFNetworking documentation)
-        [operation setCompletionBlockWithSuccess:
-         // success block
-         ^(AFHTTPRequestOperation *operation, id responseObject)
-         {
-             // taking the responseObject and parsing it
-             [self parseDictionary:responseObject];
-             [_searchResults sortUsingSelector:@selector(compareName:)];
-             
-             _isLoading = NO;
-             [self.tableView reloadData];
-         }
-         // failure block (when there's a network error or not a valid JSON object)
-        failure:^(AFHTTPRequestOperation *operation, NSError *error)
-         {
-             //this block is also called when the operations is cancelled so we need to prevent error display in this case
-             if(operation.isCancelled)
-             {
-                 return;
-             }
-             
-             // feedback to user if something goes wrong
-             [self showNetworkError];
-             
-             _isLoading = NO;
-             [self.tableView reloadData];
-         }];
-        
-        // this is a different queue from GCD (here we work with a NSOperationQueue object)
-        // (this requires an instance variable that must be initialized in the init method)
-        [_queue addOperation:operation];
-    }
+    // performs search
+    [self performSearch];
 }
 
 
