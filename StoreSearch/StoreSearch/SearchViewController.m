@@ -34,6 +34,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 
 @property(nonatomic, weak) IBOutlet UISearchBar *searchBar;
 @property(nonatomic, weak) IBOutlet UITableView *tableView;
+@property(nonatomic, weak) IBOutlet UISegmentedControl *segmentedControl;
 
 @end
 
@@ -69,7 +70,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     
     // sizing the table view so avoid having the search bar hiding the first row
     // (by adding 64 points: 20 for the status bar and 44 for the search bar)
-    self.tableView.contentInset = UIEdgeInsetsMake(64.0, 0.0, 0.0, 0.0);
+    self.tableView.contentInset = UIEdgeInsetsMake(108.0, 0.0, 0.0, 0.0);
     
     // register the nib file for the custom search result cell
     UINib *cellNib = [UINib nibWithNibName:searchResultIdentifier bundle:nil];
@@ -305,6 +306,15 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         return kind;
     }
 }
+
+
+# pragma mark - Action methods
+
+-(IBAction)segmentChanged:(UISegmentedControl *)sender
+{
+    NSLog(@"Segment changed: %d", sender.selectedSegmentIndex + 1);
+}
+
 
 # pragma mark - UITableViewDataSource
 
