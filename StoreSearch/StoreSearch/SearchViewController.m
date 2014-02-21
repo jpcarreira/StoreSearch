@@ -161,8 +161,44 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
     // printing results
     for(NSDictionary *resultDict in array)
     {
-        NSLog(@"WrapperType: %@, kind: %@", resultDict[@"wrapperType"], resultDict[@"kind"]);
+        //NSLog(@"WrapperType: %@, kind: %@", resultDict[@"wrapperType"], resultDict[@"kind"]);
+        
+        SearchResult *searchResult;
+        
+        // getting 'wrapperType'
+        NSString *wrapperType = resultDict[@"wrapperType"];
+        if([wrapperType isEqualToString:@"track"])
+        {
+            searchResult = [self parseTrack:resultDict];
+        }
+        
+        // adding to array with results
+        if(searchResult != nil)
+        {
+            [_searchResults addObject:searchResult];
+        }
+    
     }
+}
+
+
+// parsing tracks
+-(SearchResult *)parseTrack:(NSDictionary *)dictionary
+{
+    SearchResult *searchResult = [[SearchResult alloc] init];
+    
+    // parsing desired info from tracks dictionary
+    searchResult.name = dictionary[@"trackName"];
+    searchResult.artistName = dictionary[@"artistName"];
+    searchResult.artworkURL60 = dictionary[@"artworkUrl60"];
+    searchResult.artworkURL100 = dictionary[@"artworkUrl100"];
+    searchResult.storeURL = dictionary[@"trackViewUrl"];
+    searchResult.kind = dictionary[@"kind"];
+    searchResult.price = dictionary[@"trackPrice"];
+    searchResult.currency = dictionary[@"currency"];
+    searchResult.genre = dictionary[@"primaryGenreName"];
+    
+    return searchResult;
 }
 
 
@@ -178,6 +214,51 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
     [alertView show];
 }
 
+
+// "translates" 'kind' from iTunes store to user-friendly text
+-(NSString *)kindForDisplay:(NSString *)kind
+{
+    if([kind isEqualToString:@"album"])
+    {
+        return @"Album";
+    }
+    else if([kind isEqualToString:@"audiobook"])
+    {
+        return @"Audio Book";
+    }
+    else if([kind isEqualToString:@"book"])
+    {
+        return @"Book";
+    }
+    else if([kind isEqualToString:@"ebook"])
+    {
+        return @"E-Book";
+    }
+    else if([kind isEqualToString:@"feature-movie"])
+    {
+        return @"Movie";
+    }
+    else if([kind isEqualToString:@"music-video"])
+    {
+        return @"Music Video";
+    }
+    else if([kind isEqualToString:@"software"])
+    {
+        return @"App";
+    }
+    else if([kind isEqualToString:@"song"])
+    {
+        return @"Song";
+    }
+    else if([kind isEqualToString:@"tv-episode"])
+    {
+        return @"TV Episode";
+    }
+    else
+    {
+        return kind;
+    }
+}
 
 # pragma mark - UITableViewDataSource
 
@@ -222,9 +303,21 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
     {
         SearchResultCell *cell = (SearchResultCell *)[tableView dequeueReusableCellWithIdentifier:searchResultIdentifier forIndexPath:indexPath];
         
+        // name label
         SearchResult *searchResult = _searchResults[indexPath.row];
         cell.nameLabel.text = searchResult.name;
-        cell.artistNameLabel.text = searchResult.artistName;
+        
+        // artist name label also contains kind
+        NSString *artistName = searchResult.artistName;
+        if(artistName == nil)
+        {
+            artistName = @"Unknown";
+        }
+        
+        NSString *kind = [self kindForDisplay:searchResult.kind];
+        
+        cell.artistNameLabel.text = [NSString stringWithFormat:@"%@ (%@)", artistName, kind];
+        
         return cell;
     }
 }
