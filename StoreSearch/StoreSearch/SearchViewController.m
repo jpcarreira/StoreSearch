@@ -20,6 +20,9 @@ static NSString * const searchResultIdentifier = @"SearchResultCell";
 // defining the cell identifier for the nothing found result cell
 static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
 
+// defining the cell identifier for the loading cell
+static NSString * const loadingCellIdentifier = @"LoadingCell";
+
 
 // delegates: UITableViewDataSource and UITableViewDelegate (because this isn't a UITableViewController)
 // delegate: UISearchBarDelegate (to handle searches)
@@ -38,6 +41,9 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
     
     // ivar for "fake data"
     NSMutableArray *_searchResults;
+    
+    // ivar to check is the app is loading data
+    BOOL _isLoading;
 }
 
 
@@ -67,6 +73,10 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
     cellNib = [UINib nibWithNibName:nothingFoundIdentifier bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:nothingFoundIdentifier];
     
+    // register the nib file for the loading cell
+    cellNib = [UINib nibWithNibName:loadingCellIdentifier bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:loadingCellIdentifier];
+    
     // setting the heigth equal to the cell designed in the xib
     self.tableView.rowHeight = 80;
     
@@ -90,7 +100,7 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
 {
     // encoding URL from search text (UTF8)
     NSString *escapedSearchText = [searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *urlString = [NSString stringWithFormat:@"http://itunes.apple.com/search?term=%@", escapedSearchText];
+    NSString *urlString = [NSString stringWithFormat:@"http://itunes.apple.com/search?term=%@&limit=200", escapedSearchText];
     NSURL *url = [NSURL URLWithString:urlString];
     return url;
 }
@@ -343,7 +353,12 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if(_searchResults == nil)
+    // if it's loading data will display a single cell (loading cell)
+    if(_isLoading)
+    {
+        return 1;
+    }
+    else if(_searchResults == nil)
     {
         return 0;
     }
@@ -371,8 +386,19 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
     //SearchResultCell *cell = (SearchResultCell *)[tableView dequeueReusableCellWithIdentifier:@"SearchResultCell" forIndexPath:indexPath];
     // passing along the indexPath will work in this case because we registered the nib in viewDidLoad
     
+    // display "loading cell" if the app is loading data from the webservice
+    if(_isLoading)
+    {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:loadingCellIdentifier forIndexPath:indexPath];
+        
+        UIActivityIndicatorView *spinner = (UIActivityIndicatorView *)[cell viewWithTag:100];
+        [spinner startAnimating];
+        
+        return cell;
+    }
+    
     // returning a "nothing found" cell if the array is empty
-    if([_searchResults count] == 0)
+    else if([_searchResults count] == 0)
     {
         return [tableView dequeueReusableCellWithIdentifier:nothingFoundIdentifier forIndexPath:indexPath];
     }
@@ -475,10 +501,10 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
 
 
 // ensures that we can only select rows with actual search results
-// (this way we can't pick a cell that shows 'no results found')
+// (this way we can't pick a cell that shows 'no results found' or 'loading')
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if([_searchResults count] == 0)
+    if([_searchResults count] == 0 || _isLoading)
     {
         return nil;
     }

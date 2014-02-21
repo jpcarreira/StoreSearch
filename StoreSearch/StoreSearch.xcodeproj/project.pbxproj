@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		628A7E7B18B7811A00A58254 /* LoadingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 628A7E7A18B7811A00A58254 /* LoadingCell.xib */; };
 		62B7A65C18B4DE9300B54F14 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62B7A65B18B4DE9300B54F14 /* Foundation.framework */; };
 		62B7A65E18B4DE9300B54F14 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62B7A65D18B4DE9300B54F14 /* CoreGraphics.framework */; };
 		62B7A66018B4DE9300B54F14 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62B7A65F18B4DE9300B54F14 /* UIKit.framework */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		628A7E7A18B7811A00A58254 /* LoadingCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoadingCell.xib; sourceTree = "<group>"; };
 		62B7A65818B4DE9300B54F14 /* StoreSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StoreSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		62B7A65B18B4DE9300B54F14 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		62B7A65D18B4DE9300B54F14 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -92,6 +94,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		628A7E7718B7805E00A58254 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				62B7A69818B5154400B54F14 /* SearchResult.h */,
+				62B7A69918B5154400B54F14 /* SearchResult.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		628A7E7818B7806500A58254 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				62B7A6A418B539DF00B54F14 /* NothingFoundCell.h */,
+				62B7A6A518B539DF00B54F14 /* NothingFoundCell.m */,
+				62B7A6A218B533AA00B54F14 /* NothingFoundCell.xib */,
+				62B7A69D18B5222300B54F14 /* SearchResultCell.h */,
+				62B7A69E18B5222300B54F14 /* SearchResultCell.m */,
+				62B7A69B18B51E5100B54F14 /* SearchResultCell.xib */,
+				62B7A69218B4E28D00B54F14 /* SearchViewController.xib */,
+				628A7E7A18B7811A00A58254 /* LoadingCell.xib */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		628A7E7918B7806D00A58254 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				62B7A69018B4E28D00B54F14 /* SearchViewController.h */,
+				62B7A69118B4E28D00B54F14 /* SearchViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
 		62B7A64F18B4DE9300B54F14 = {
 			isa = PBXGroup;
 			children = (
@@ -125,21 +160,11 @@
 		62B7A66118B4DE9300B54F14 /* StoreSearch */ = {
 			isa = PBXGroup;
 			children = (
-				62B7A66A18B4DE9300B54F14 /* AppDelegate.h */,
-				62B7A66B18B4DE9300B54F14 /* AppDelegate.m */,
 				62B7A67318B4DE9300B54F14 /* Images.xcassets */,
+				628A7E7918B7806D00A58254 /* Controller */,
+				628A7E7818B7806500A58254 /* View */,
+				628A7E7718B7805E00A58254 /* Model */,
 				62B7A66218B4DE9300B54F14 /* Supporting Files */,
-				62B7A69018B4E28D00B54F14 /* SearchViewController.h */,
-				62B7A69118B4E28D00B54F14 /* SearchViewController.m */,
-				62B7A69218B4E28D00B54F14 /* SearchViewController.xib */,
-				62B7A69818B5154400B54F14 /* SearchResult.h */,
-				62B7A69918B5154400B54F14 /* SearchResult.m */,
-				62B7A69B18B51E5100B54F14 /* SearchResultCell.xib */,
-				62B7A69D18B5222300B54F14 /* SearchResultCell.h */,
-				62B7A69E18B5222300B54F14 /* SearchResultCell.m */,
-				62B7A6A218B533AA00B54F14 /* NothingFoundCell.xib */,
-				62B7A6A418B539DF00B54F14 /* NothingFoundCell.h */,
-				62B7A6A518B539DF00B54F14 /* NothingFoundCell.m */,
 			);
 			path = StoreSearch;
 			sourceTree = "<group>";
@@ -147,6 +172,8 @@
 		62B7A66218B4DE9300B54F14 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				62B7A66A18B4DE9300B54F14 /* AppDelegate.h */,
+				62B7A66B18B4DE9300B54F14 /* AppDelegate.m */,
 				62B7A66318B4DE9300B54F14 /* StoreSearch-Info.plist */,
 				62B7A66418B4DE9300B54F14 /* InfoPlist.strings */,
 				62B7A66718B4DE9300B54F14 /* main.m */,
@@ -251,6 +278,7 @@
 			files = (
 				62B7A67418B4DE9300B54F14 /* Images.xcassets in Resources */,
 				62B7A66618B4DE9300B54F14 /* InfoPlist.strings in Resources */,
+				628A7E7B18B7811A00A58254 /* LoadingCell.xib in Resources */,
 				62B7A69C18B51E5100B54F14 /* SearchResultCell.xib in Resources */,
 				62B7A6A318B533AA00B54F14 /* NothingFoundCell.xib in Resources */,
 				62B7A69418B4E28D00B54F14 /* SearchViewController.xib in Resources */,
@@ -478,6 +506,7 @@
 				62B7A68C18B4DE9300B54F14 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		62B7A68D18B4DE9300B54F14 /* Build configuration list for PBXNativeTarget "StoreSearchTests" */ = {
 			isa = XCConfigurationList;
@@ -486,6 +515,7 @@
 				62B7A68F18B4DE9300B54F14 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
