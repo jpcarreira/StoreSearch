@@ -82,6 +82,38 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
 }
 
 
+# pragma mark - instance methods
+
+// builds a url from standard string to query iTunes webservice
+-(NSURL *)urlWithSearchText:(NSString *)searchText
+{
+    // encoding URL from search text (UTF8)
+    NSString *escapedSearchText = [searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlString = [NSString stringWithFormat:@"http://itunes.apple.com/search?term=%@", escapedSearchText];
+    NSURL *url = [NSURL URLWithString:urlString];
+    return url;
+}
+
+
+-(NSString *)performStoreRequestWithURL:(NSURL *)url
+{
+    NSError *error;
+    
+    // calling a convenience constructor of NSString that returns a new NSString object with the data it receives from the server
+    // (if something goes wrong the string is nil in the error variable says what went wrong)
+    NSString *resultString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:&error];
+    
+    // checking for errors
+    if(resultString == nil)
+    {
+        NSLog(@"Download Error: %@", error);
+        return nil;
+    }
+    
+    return resultString;
+}
+
+
 # pragma mark - UITableViewDataSource
 
 
@@ -141,21 +173,16 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
     // dismissing the keyboard
     [searchBar resignFirstResponder];
     
-#warning fake data
-    
+    // initializing the ivar containing the search results
     _searchResults = [NSMutableArray arrayWithCapacity:10];
     
-    if(![searchBar.text isEqualToString:@"fcp"])
-    {
-        for(int i = 0; i < 3; i++)
-        {
-            SearchResult *searchResult = [[SearchResult alloc] init];
-            searchResult.name = [NSString stringWithFormat:@"Fake result %d for", i];
-            searchResult.artistName = searchBar.text;
-            
-            [_searchResults addObject:searchResult];
-        }
-    }
+    // building the URL from the text user inputs in the search bar
+    NSURL *url = [self urlWithSearchText:searchBar.text];
+    NSLog(@"URL '%@'", url);
+    
+    // json string containing the outcome of the search
+    NSString *jsonString = [self performStoreRequestWithURL:url];
+    NSLog(@"Received json string '%@'", jsonString);
     
     [self.tableView reloadData];
 }
