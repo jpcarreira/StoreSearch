@@ -394,6 +394,10 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     {
         [searchBar resignFirstResponder];
         
+        // canceling any previous ongoing request
+        // (this will invoke the failure block of AFNetworking)
+        [_queue cancelAllOperations];
+        
         _isLoading = YES;
         [self.tableView reloadData];
         
@@ -423,6 +427,12 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
          // failure block (when there's a network error or not a valid JSON object)
         failure:^(AFHTTPRequestOperation *operation, NSError *error)
          {
+             //this block is also called when the operations is cancelled so we need to prevent error display in this case
+             if(operation.isCancelled)
+             {
+                 return;
+             }
+             
              // feedback to user if something goes wrong
              [self showNetworkError];
              
