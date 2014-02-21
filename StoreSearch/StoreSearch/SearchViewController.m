@@ -84,6 +84,7 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
 
 # pragma mark - instance methods
 
+
 // builds a url from standard string to query iTunes webservice
 -(NSURL *)urlWithSearchText:(NSString *)searchText
 {
@@ -95,6 +96,7 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
 }
 
 
+// returns the search result based on url
 -(NSString *)performStoreRequestWithURL:(NSURL *)url
 {
     NSError *error;
@@ -111,6 +113,47 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
     }
     
     return resultString;
+}
+
+
+// parses json data
+-(NSDictionary *)parseJson:(NSString *)jsonString
+{
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *error;
+    
+    // converts JSON search results to a dictionary
+    id resultObject = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+    
+    if(resultObject == nil)
+    {
+        NSLog(@"JSON error: %@", error);
+        return nil;
+    }
+    
+    // defensive programming against any unexpected change on the server side
+    // (just because serialization was able to turn the string into a valid ObjC object, it doesn't mean it will return a NSDictionary)
+    // (that's why we use 'id' for resultObject and then here we check if it's a dictionary, because it can return an NSArray or NSNumber)
+    if(![resultObject isKindOfClass:[NSDictionary class]])
+    {
+        NSLog(@"JSON error: expected dictionary");
+        return nil;
+    }
+    
+    return resultObject;
+}
+
+
+// handles network errors
+-(void)showNetworkError
+{
+    UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:@"Whoops..."
+                              message:@"error reading from the iTunes store. Please try again."
+                              delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil];
+    [alertView show];
 }
 
 
@@ -170,21 +213,45 @@ static NSString * const nothingFoundIdentifier = @"NothingFoundCell";
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    // dismissing the keyboard
-    [searchBar resignFirstResponder];
-    
-    // initializing the ivar containing the search results
-    _searchResults = [NSMutableArray arrayWithCapacity:10];
-    
-    // building the URL from the text user inputs in the search bar
-    NSURL *url = [self urlWithSearchText:searchBar.text];
-    NSLog(@"URL '%@'", url);
-    
-    // json string containing the outcome of the search
-    NSString *jsonString = [self performStoreRequestWithURL:url];
-    NSLog(@"Received json string '%@'", jsonString);
-    
-    [self.tableView reloadData];
+    // only performs searchs if there's text
+    if([searchBar.text length] > 0)
+    {
+        // dismissing the keyboard
+        [searchBar resignFirstResponder];
+        
+        // initializing the ivar containing the search results
+        _searchResults = [NSMutableArray arrayWithCapacity:10];
+        
+        // building the URL from the text user inputs in the search bar
+        NSURL *url = [self urlWithSearchText:searchBar.text];
+        //NSLog(@"URL '%@'", url);
+        
+        // json string containing the outcome of the search
+        NSString *jsonString = [self performStoreRequestWithURL:url];
+        //NSLog(@"Received json string '%@'", jsonString);
+        
+        // checking for errors in json string
+        if(jsonString == nil)
+        {
+            [self showNetworkError];
+            return;
+        }
+        
+        // parsing json
+        NSDictionary *dictionary = [self parseJson:jsonString];
+        
+        // checking for errors in json parsing
+        if(dictionary == nil)
+        {
+            [self showNetworkError];
+            return;
+        }
+        
+        NSLog(@"Dictionary '%@'", dictionary);
+        
+        [self.tableView reloadData];
+    }
+
 }
 
 
