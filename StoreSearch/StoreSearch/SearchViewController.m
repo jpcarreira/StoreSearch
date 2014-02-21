@@ -432,51 +432,81 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    
     // only performs searchs if there's text
     if([searchBar.text length] > 0)
     {
         // dismissing the keyboard
         [searchBar resignFirstResponder];
         
+        // setting the flag
+        _isLoading = YES;
+        [self.tableView reloadData];
+        
         // initializing the ivar containing the search results
         _searchResults = [NSMutableArray arrayWithCapacity:10];
         
-        // building the URL from the text user inputs in the search bar
-        NSURL *url = [self urlWithSearchText:searchBar.text];
-        //NSLog(@"URL '%@'", url);
+        // referencing a medium priority queue
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         
-        // json string containing the outcome of the search
-        NSString *jsonString = [self performStoreRequestWithURL:url];
-        //NSLog(@"Received json string '%@'", jsonString);
-        
-        // checking for errors in json string
-        if(jsonString == nil)
-        {
-            [self showNetworkError];
-            return;
-        }
-        
-        // parsing json
-        NSDictionary *dictionary = [self parseJson:jsonString];
-        
-        // checking for errors in json parsing
-        if(dictionary == nil)
-        {
-            [self showNetworkError];
-            return;
-        }
-        
-        // we need to parse the dictionary as the iTunes store as different json data structures according to the product
-        [self parseDictionary:dictionary];
-        
-        // alphabetical sort (using compareName on SearchResult class)
-        [_searchResults sortUsingSelector:@selector(compareName:)];
-        
-        //NSLog(@"Dictionary '%@'", dictionary);
-        
-        [self.tableView reloadData];
+        // block to download data from webservice
+        dispatch_async(queue,
+        ^{
+            // building the URL from the text user inputs in the search bar
+            NSURL *url = [self urlWithSearchText:searchBar.text];
+            //NSLog(@"URL '%@'", url);
+            
+            // json string containing the outcome of the search
+            NSString *jsonString = [self performStoreRequestWithURL:url];
+            //NSLog(@"Received json string '%@'", jsonString);
+            
+            // checking for errors in json string
+            if(jsonString == nil)
+            {
+                // error handling shouldn't be done inside a queue!
+                // UIKit code must be performed ALWAYS in the main thread
+                // (the line below was used only this code was on the main thread)
+                //[self showNetworkError];
+                dispatch_async(dispatch_get_main_queue(),
+                ^{
+                    [self showNetworkError];
+                });
+                return;
+            }
+            
+            // parsing json
+            NSDictionary *dictionary = [self parseJson:jsonString];
+            
+            // checking for errors in json parsing
+            if(dictionary == nil)
+            {
+                // error handling shouldn't be done inside a queue!
+                // UIKit code must be performed ALWAYS in the main thread
+                // (the line below was used only this code was on the main thread)
+                //[self showNetworkError];
+                dispatch_async(dispatch_get_main_queue(),
+                ^{
+                    [self showNetworkError];
+                });
+                return;
+            }
+            
+            // we need to parse the dictionary as the iTunes store as different json data structures according to the product
+            [self parseDictionary:dictionary];
+            
+            // alphabetical sort (using compareName on SearchResult class)
+            [_searchResults sortUsingSelector:@selector(compareName:)];
+            
+            //NSLog(@"Dictionary '%@'", dictionary);
+            
+            dispatch_async(dispatch_get_main_queue(),
+            ^{
+                // setting the flag
+                _isLoading = NO;
+                [self.tableView reloadData];
+            });
+        });
     }
-
 }
 
 
