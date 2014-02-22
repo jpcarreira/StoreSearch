@@ -456,12 +456,19 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     // enabling the popup screen
-    // (this is the equivalent to a modal segue)
     // (as this app doesn't use storyboards we can't make segues and to show a new view controller
     // we need to alloc and init it manually)
     DetailViewController *controller = [[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:nil];
     
-    [self presentViewController:controller animated:YES completion:nil];
+    // instead of using below, which is the equivalent to a modal segue
+    //[self presentViewController:controller animated:YES completion:nil];
+    // we'll use view controller's containment APIs, adding the DetailViewController as a child view controller (takes 3 steps)
+    // 1. add the new view controller as a subview
+    [self.view addSubview:controller.view];
+    // 2. tell the current view controller that DetailsViewController is managing the screen
+    [self addChildViewController:controller];
+    // 3. tell DetailsViewController that this controller is it's parent
+    [controller didMoveToParentViewController:self];
 }
 
 

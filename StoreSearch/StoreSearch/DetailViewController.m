@@ -24,11 +24,13 @@
     return self;
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 }
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -37,11 +39,26 @@
 }
 
 
+-(void)dealloc
+{
+    // just to make sure this view controller is properly dismissed when pressing close button
+    NSLog(@"DetailViewController dealloc %@", self);
+}
+
+
 #pragma mark - Action methods
 
 -(IBAction)close:(id)sender
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    // this won't work because the view controller isn't shown modally
+    //[self dismissViewControllerAnimated:YES completion:nil];
+
+    // taking away the parent controller (SearhViewController)
+    [self willMoveToParentViewController:nil];
+    // removing the view from the screen
+    [self.view removeFromSuperview];
+    // disposing this view controller
+    [self removeFromParentViewController];
 }
 
 @end
