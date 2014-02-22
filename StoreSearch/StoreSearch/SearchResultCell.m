@@ -8,6 +8,7 @@
 
 #import "SearchResultCell.h"
 #import "SearchResult.h"
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 @implementation SearchResultCell
 
@@ -42,12 +43,24 @@
 }
 
 
+// as table view cells can be reused, we'll cancel image download when the cell get's out of the way by scrolling
+-(void)prepareForReuse
+{
+    [super prepareForReuse];
+    
+    [self.artworkImageView cancelImageRequestOperation];
+    self.nameLabel = nil;
+    self.artistNameLabel = nil;
+}
+
 # pragma mark - Instance methods
 
 -(void)configureForSearchResult:(SearchResult *)searchResult
 {
+    // name label
     self.nameLabel.text = searchResult.name;
     
+    // artist name label (also containing info about kind)
     NSString *artistName = searchResult.artistName;
     if(artistName == nil)
     {
@@ -56,6 +69,11 @@
     
     NSString *kind = [self kindForDisplay:searchResult.kind];
     self.artistNameLabel.text = [NSString stringWithFormat:@"%@ (%@)", artistName, kind];
+    
+    // artwork image
+    // (while the image is loading the image view will display the placeholder image added to the asset catalog)
+    // (getting the 60x60 images, being lighter, will improve image download and overall app performance)
+    [self.artworkImageView setImageWithURL:[NSURL URLWithString:searchResult.artworkURL60] placeholderImage:[UIImage imageNamed:@"Placeholder"]];
 }
 
 
