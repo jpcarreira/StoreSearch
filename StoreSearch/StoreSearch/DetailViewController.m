@@ -7,6 +7,7 @@
 //
 
 #import "DetailViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 // this class doesn't need a delegate protocol because there's nothing to communicate back to the Search View Controller
 @interface DetailViewController ()
@@ -36,7 +37,20 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    
+    // "rounding" the edges of the popup
+    self.popUpView.layer.cornerRadius = 10.0f;
+    
+    // "stretching" the button
+    UIImage *image = [[UIImage imageNamed:@"PriceButton"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+    
+    // "paiting" the button image with the same tint color
+    image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    
+    [self.priceButton setBackgroundImage:image forState:UIControlStateNormal];
+    
+    // applying a tint color to the view (we could also apply to individual object in this view)
+    self.view.tintColor = [UIColor colorWithRed:20/255.0f green:160/255.0f blue:160/255.0f alpha:1.0f];
 }
 
 
@@ -50,7 +64,7 @@
 -(void)dealloc
 {
     // just to make sure this view controller is properly dismissed when pressing close button
-    NSLog(@"DetailViewController dealloc %@", self);
+    //NSLog(@"DetailViewController dealloc %@", self);
 }
 
 

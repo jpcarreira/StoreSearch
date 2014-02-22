@@ -91,6 +91,9 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     
     // making the keyboard immediatly available
     [self.searchBar becomeFirstResponder];
+    
+#warning remove this later
+    self.searchBar.text = @"SLB";
 }
 
 
@@ -459,6 +462,9 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     // (as this app doesn't use storyboards we can't make segues and to show a new view controller
     // we need to alloc and init it manually)
     DetailViewController *controller = [[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:nil];
+    
+    // resizing the DetailViewController's view size to the same as the SearchViewController
+    controller.view.frame = self.view.frame;
     
     // instead of using below, which is the equivalent to a modal segue
     //[self presentViewController:controller animated:YES completion:nil];

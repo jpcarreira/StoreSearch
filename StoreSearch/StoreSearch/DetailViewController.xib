@@ -12,6 +12,7 @@
                 <outlet property="kindLabel" destination="9wb-ro-exT" id="41G-Qs-rKf"/>
                 <outlet property="nameLabel" destination="ziB-sg-kFH" id="OZ5-c9-uwl"/>
                 <outlet property="popUpView" destination="mlB-sT-Ycd" id="BwT-Ig-dYh"/>
+                <outlet property="priceButton" destination="CCz-GE-11N" id="uK0-hp-cQH"/>
                 <outlet property="view" destination="1" id="3"/>
             </connections>
         </placeholder>
@@ -20,12 +21,12 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mlB-sT-Ycd" userLabel="Popup View">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mlB-sT-Ycd" userLabel="Popup View">
                     <rect key="frame" x="40" y="154" width="240" height="260"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RTe-6p-rWa" userLabel="Close Button">
-                            <rect key="frame" x="3" y="0.0" width="15" height="22"/>
+                            <rect key="frame" x="3" y="0.0" width="44" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" image="CloseButton"/>
                             <connections>
@@ -85,9 +86,17 @@
                         </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="0.95000000000000007" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="240" id="FS5-3C-NX8"/>
+                        <constraint firstAttribute="height" constant="260" id="LUb-ST-WHJ"/>
+                    </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="centerY" secondItem="mlB-sT-Ycd" secondAttribute="centerY" id="F46-K5-ggW"/>
+                <constraint firstAttribute="centerX" secondItem="mlB-sT-Ycd" secondAttribute="centerX" id="NwY-DN-TMM"/>
+            </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
         </view>
