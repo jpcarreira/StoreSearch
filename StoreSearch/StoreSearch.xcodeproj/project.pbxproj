@@ -115,6 +115,8 @@
 		628A7E7818B7806500A58254 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				625AB79A18B8E30600CB4210 /* DetailViewController.xib */,
+				628A7E7A18B7811A00A58254 /* LoadingCell.xib */,
 				62B7A6A418B539DF00B54F14 /* NothingFoundCell.h */,
 				62B7A6A518B539DF00B54F14 /* NothingFoundCell.m */,
 				62B7A6A218B533AA00B54F14 /* NothingFoundCell.xib */,
@@ -122,8 +124,6 @@
 				62B7A69E18B5222300B54F14 /* SearchResultCell.m */,
 				62B7A69B18B51E5100B54F14 /* SearchResultCell.xib */,
 				62B7A69218B4E28D00B54F14 /* SearchViewController.xib */,
-				628A7E7A18B7811A00A58254 /* LoadingCell.xib */,
-				625AB79A18B8E30600CB4210 /* DetailViewController.xib */,
 			);
 			name = View;
 			sourceTree = "<group>";

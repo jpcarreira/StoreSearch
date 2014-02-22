@@ -11,6 +11,14 @@
 // this class doesn't need a delegate protocol because there's nothing to communicate back to the Search View Controller
 @interface DetailViewController ()
 
+@property (nonatomic, weak) IBOutlet UIView *popUpView;
+@property (nonatomic, weak) IBOutlet UIImageView *artworkImageView;
+@property (nonatomic, weak) IBOutlet UILabel *nameLabel;
+@property (nonatomic, weak) IBOutlet UILabel *artistNameLabel;
+@property (nonatomic, weak) IBOutlet UILabel *kindLabel;
+@property (nonatomic, weak) IBOutlet UILabel *genreLabel;
+@property (nonatomic, weak) IBOutlet UIButton *priceButton;
+
 @end
 
 @implementation DetailViewController
