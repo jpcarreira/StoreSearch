@@ -9,6 +9,7 @@
 #import "DetailViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SearchResult.h"
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 // this class doesn't need a delegate protocol because there's nothing to communicate back to the Search View Controller
 @interface DetailViewController ()<UIGestureRecognizerDelegate>
@@ -78,6 +79,10 @@
 {
     // just to make sure this view controller is properly dismissed when pressing close button
     //NSLog(@"DetailViewController dealloc %@", self);
+    
+    // canceling image download in case user closes the popup
+    [self.artworkImageView cancelImageRequestOperation];
+    
 }
 
 
@@ -114,6 +119,9 @@
     }
     
     [self.priceButton setTitle:priceText forState:UIControlStateNormal];
+    
+    // loading artwork
+    [self.artworkImageView setImageWithURL:[NSURL URLWithString:self.searchResult.artworkURL100]];
         
 }
 
@@ -133,6 +141,11 @@
     [self removeFromParentViewController];
 }
 
+-(IBAction)openInStore:(id)sender
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.searchResult.storeURL]];
+    //NSLog(@"url = '%@'", self.searchResult.storeURL);
+}
 
 #pragma mark - UIGestureRecognizerDelegate
 
