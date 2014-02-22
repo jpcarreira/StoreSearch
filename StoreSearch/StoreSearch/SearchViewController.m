@@ -282,52 +282,6 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 }
 
 
-// "translates" 'kind' from iTunes store to user-friendly text
--(NSString *)kindForDisplay:(NSString *)kind
-{
-    if([kind isEqualToString:@"album"])
-    {
-        return @"Album";
-    }
-    else if([kind isEqualToString:@"audiobook"])
-    {
-        return @"Audio Book";
-    }
-    else if([kind isEqualToString:@"book"])
-    {
-        return @"Book";
-    }
-    else if([kind isEqualToString:@"ebook"])
-    {
-        return @"E-Book";
-    }
-    else if([kind isEqualToString:@"feature-movie"])
-    {
-        return @"Movie";
-    }
-    else if([kind isEqualToString:@"music-video"])
-    {
-        return @"Music Video";
-    }
-    else if([kind isEqualToString:@"software"])
-    {
-        return @"App";
-    }
-    else if([kind isEqualToString:@"song"])
-    {
-        return @"Song";
-    }
-    else if([kind isEqualToString:@"tv-episode"])
-    {
-        return @"TV Episode";
-    }
-    else
-    {
-        return kind;
-    }
-}
-
-
 // search logic
 -(void)performSearch
 {
@@ -454,25 +408,17 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     {
         return [tableView dequeueReusableCellWithIdentifier:nothingFoundIdentifier forIndexPath:indexPath];
     }
-    // with at least one search result we return a "serch result" cell
+    // with at least one search result we return a "search result" cell
     else
     {
+        // dequeuing the search result cell
         SearchResultCell *cell = (SearchResultCell *)[tableView dequeueReusableCellWithIdentifier:searchResultIdentifier forIndexPath:indexPath];
         
-        // name label
+        // getting the search result
         SearchResult *searchResult = _searchResults[indexPath.row];
-        cell.nameLabel.text = searchResult.name;
         
-        // artist name label also contains kind
-        NSString *artistName = searchResult.artistName;
-        if(artistName == nil)
-        {
-            artistName = @"Unknown";
-        }
-        
-        NSString *kind = [self kindForDisplay:searchResult.kind];
-        
-        cell.artistNameLabel.text = [NSString stringWithFormat:@"%@ (%@)", artistName, kind];
+        // configuring the cell
+        [cell configureForSearchResult:searchResult];
         
         return cell;
     }
