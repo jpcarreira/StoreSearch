@@ -10,7 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 // this class doesn't need a delegate protocol because there's nothing to communicate back to the Search View Controller
-@interface DetailViewController ()
+@interface DetailViewController ()<UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak) IBOutlet UIView *popUpView;
 @property (nonatomic, weak) IBOutlet UIImageView *artworkImageView;
@@ -51,6 +51,12 @@
     
     // applying a tint color to the view (we could also apply to individual object in this view)
     self.view.tintColor = [UIColor colorWithRed:20/255.0f green:160/255.0f blue:160/255.0f alpha:1.0f];
+    
+    // enabling a gesture recognizer to dismiss the popup window
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close:)];
+    gestureRecognizer.cancelsTouchesInView = NO;
+    gestureRecognizer.delegate = self;
+    [self.view addGestureRecognizer:gestureRecognizer];
 }
 
 
@@ -81,6 +87,15 @@
     [self.view removeFromSuperview];
     // disposing this view controller
     [self removeFromParentViewController];
+}
+
+
+#pragma mark - UIGestureRecognizerDelegate
+
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    // only returns YES when the touch is in the background
+    return (touch.view == self.view);
 }
 
 @end
