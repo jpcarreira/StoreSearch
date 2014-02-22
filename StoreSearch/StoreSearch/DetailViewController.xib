@@ -76,10 +76,14 @@
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CCz-GE-11N">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CCz-GE-11N">
                             <rect key="frame" x="174" y="230" width="60" height="24"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="24" id="rYE-Mc-txt"/>
+                            </constraints>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                            <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="5" maxY="0.0"/>
                             <state key="normal" title="$9.99">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
@@ -89,6 +93,8 @@
                     <constraints>
                         <constraint firstAttribute="width" constant="240" id="FS5-3C-NX8"/>
                         <constraint firstAttribute="height" constant="260" id="LUb-ST-WHJ"/>
+                        <constraint firstAttribute="trailing" secondItem="CCz-GE-11N" secondAttribute="trailing" constant="6" id="XlQ-Yw-lgn"/>
+                        <constraint firstAttribute="bottom" secondItem="CCz-GE-11N" secondAttribute="bottom" constant="6" id="d09-gj-XEa"/>
                     </constraints>
                 </view>
             </subviews>

@@ -67,59 +67,13 @@
         artistName = @"Unknown";
     }
     
-    NSString *kind = [self kindForDisplay:searchResult.kind];
+    NSString *kind = [searchResult kindForDisplay];
     self.artistNameLabel.text = [NSString stringWithFormat:@"%@ (%@)", artistName, kind];
     
     // artwork image
     // (while the image is loading the image view will display the placeholder image added to the asset catalog)
     // (getting the 60x60 images, being lighter, will improve image download and overall app performance)
     [self.artworkImageView setImageWithURL:[NSURL URLWithString:searchResult.artworkURL60] placeholderImage:[UIImage imageNamed:@"Placeholder"]];
-}
-
-
-// "translates" 'kind' from iTunes store to user-friendly text
--(NSString *)kindForDisplay:(NSString *)kind
-{
-    if([kind isEqualToString:@"album"])
-    {
-        return @"Album";
-    }
-    else if([kind isEqualToString:@"audiobook"])
-    {
-        return @"Audio Book";
-    }
-    else if([kind isEqualToString:@"book"])
-    {
-        return @"Book";
-    }
-    else if([kind isEqualToString:@"ebook"])
-    {
-        return @"E-Book";
-    }
-    else if([kind isEqualToString:@"feature-movie"])
-    {
-        return @"Movie";
-    }
-    else if([kind isEqualToString:@"music-video"])
-    {
-        return @"Music Video";
-    }
-    else if([kind isEqualToString:@"software"])
-    {
-        return @"App";
-    }
-    else if([kind isEqualToString:@"song"])
-    {
-        return @"Song";
-    }
-    else if([kind isEqualToString:@"tv-episode"])
-    {
-        return @"TV Episode";
-    }
-    else
-    {
-        return kind;
-    }
 }
 
 @end

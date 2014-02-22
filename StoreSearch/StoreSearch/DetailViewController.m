@@ -8,6 +8,7 @@
 
 #import "DetailViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "SearchResult.h"
 
 // this class doesn't need a delegate protocol because there's nothing to communicate back to the Search View Controller
 @interface DetailViewController ()<UIGestureRecognizerDelegate>
@@ -57,6 +58,12 @@
     gestureRecognizer.cancelsTouchesInView = NO;
     gestureRecognizer.delegate = self;
     [self.view addGestureRecognizer:gestureRecognizer];
+    
+    // setting up the UI
+    if(self.searchResult != nil)
+    {
+        [self updateUI];
+    }
 }
 
 
@@ -71,6 +78,43 @@
 {
     // just to make sure this view controller is properly dismissed when pressing close button
     //NSLog(@"DetailViewController dealloc %@", self);
+}
+
+
+#pragma mark - Instance methods
+
+-(void)updateUI
+{
+    // setting up the labels
+    self.nameLabel.text = self.searchResult.name;
+    
+    NSString *artistName = self.searchResult.artistName;
+    if(artistName == nil)
+    {
+        artistName = @"Unknown";
+    }
+    
+    self.artistNameLabel.text = artistName;
+    self.kindLabel.text = [self.searchResult kindForDisplay];
+    self.genreLabel.text = self.searchResult.genre;
+    
+    // setting up the price button
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    [formatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+    [formatter setCurrencyCode:self.searchResult.currency];
+    
+    NSString *priceText;
+    if([self.searchResult.price floatValue] == 0.0f)
+    {
+        priceText = @"Free";
+    }
+    else
+    {
+        priceText = [formatter stringFromNumber:self.searchResult.price];
+    }
+    
+    [self.priceButton setTitle:priceText forState:UIControlStateNormal];
+        
 }
 
 

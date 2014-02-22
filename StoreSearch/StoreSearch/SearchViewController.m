@@ -463,6 +463,10 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     // we need to alloc and init it manually)
     DetailViewController *controller = [[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:nil];
     
+    // setting the controller's SearchResult with the current one
+    SearchResult *searchResult = _searchResults[indexPath.row];
+    controller.searchResult = searchResult;
+    
     // resizing the DetailViewController's view size to the same as the SearchViewController
     controller.view.frame = self.view.frame;
     
