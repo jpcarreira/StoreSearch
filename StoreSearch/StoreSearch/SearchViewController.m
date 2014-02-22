@@ -16,6 +16,8 @@
 
 #import <AFNetworking/AFNetworking.h>
 
+#import "DetailViewController.h"
+
 // defining the cell identifier for the search result cell
 static NSString * const searchResultIdentifier = @"SearchResultCell";
 
@@ -448,10 +450,18 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 # pragma mark - UITableViewDelegate
 
 
-// deselects a tapped row with an animation
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // deselects a tapped row with an animation
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    // enabling the popup screen
+    // (this is the equivalent to a modal segue)
+    // (as this app doesn't use storyboards we can't make segues and to show a new view controller
+    // we need to alloc and init it manually)
+    DetailViewController *controller = [[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:nil];
+    
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 
