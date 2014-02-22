@@ -49,8 +49,8 @@
     [super prepareForReuse];
     
     [self.artworkImageView cancelImageRequestOperation];
-    self.nameLabel = nil;
-    self.artistNameLabel = nil;
+    self.nameLabel.text = nil;
+    self.artistNameLabel.text = nil;
 }
 
 # pragma mark - Instance methods

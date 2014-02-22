@@ -93,7 +93,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     [self.searchBar becomeFirstResponder];
     
 #warning remove this later
-    self.searchBar.text = @"SLB";
+    self.searchBar.text = @"Benfica";
 }
 
 
