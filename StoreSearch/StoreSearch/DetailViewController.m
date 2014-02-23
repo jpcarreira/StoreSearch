@@ -125,7 +125,36 @@
     
     // loading artwork
     [self.artworkImageView setImageWithURL:[NSURL URLWithString:self.searchResult.artworkURL100]];
-        
+}
+
+
+-(void)presentInParentViewController:(UIViewController *)parentViewController
+{
+    // resizing the DetailViewController's view size to the same as the SearchViewController
+    self.view.frame = parentViewController.view.bounds;
+    
+    // add the new view controller as a subview
+    [parentViewController.view addSubview:self.view];
+    
+    // tell the parent view controller that DetailsViewController is managing the screen
+    [parentViewController addChildViewController:self];
+    
+    // tell DetailsViewController that this controller is it's parent
+    [self didMoveToParentViewController:parentViewController];
+}
+
+
+-(void)dismissFromParentViewController
+{
+    // this won't work because the view controller isn't shown modally
+    //[self dismissViewControllerAnimated:YES completion:nil];
+    
+    // taking away the parent controller (SearhViewController)
+    [self willMoveToParentViewController:nil];
+    // removing the view from the screen
+    [self.view removeFromSuperview];
+    // disposing this view controller
+    [self removeFromParentViewController];
 }
 
 
@@ -133,15 +162,7 @@
 
 -(IBAction)close:(id)sender
 {
-    // this won't work because the view controller isn't shown modally
-    //[self dismissViewControllerAnimated:YES completion:nil];
-
-    // taking away the parent controller (SearhViewController)
-    [self willMoveToParentViewController:nil];
-    // removing the view from the screen
-    [self.view removeFromSuperview];
-    // disposing this view controller
-    [self removeFromParentViewController];
+    [self dismissFromParentViewController];
 }
 
 -(IBAction)openInStore:(id)sender

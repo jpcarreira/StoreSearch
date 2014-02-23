@@ -470,6 +470,8 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     SearchResult *searchResult = _searchResults[indexPath.row];
     controller.searchResult = searchResult;
     
+    // all the code below was moved to DetailsViewController
+    /*
     // resizing the DetailViewController's view size to the same as the SearchViewController
     controller.view.frame = self.view.frame;
     
@@ -482,6 +484,9 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     [self addChildViewController:controller];
     // 3. tell DetailsViewController that this controller is it's parent
     [controller didMoveToParentViewController:self];
+     */
+    
+    [controller presentInParentViewController:self];
 }
 
 

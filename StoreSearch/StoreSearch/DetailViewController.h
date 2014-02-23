@@ -16,4 +16,7 @@
 // will need to see it to acess and modify it (unlike the IBOutlets)
 @property (nonatomic, strong) SearchResult *searchResult;
 
+-(void)presentInParentViewController:(UIViewController *)parentViewController;
+-(void)dismissFromParentViewController;
+
 @end
