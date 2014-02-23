@@ -455,6 +455,9 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // dismissing the keyboard
+    [self.searchBar resignFirstResponder];
+    
     // deselects a tapped row with an animation
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     

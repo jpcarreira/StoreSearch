@@ -53,6 +53,7 @@
     self.artistNameLabel.text = nil;
 }
 
+
 # pragma mark - Instance methods
 
 -(void)configureForSearchResult:(SearchResult *)searchResult

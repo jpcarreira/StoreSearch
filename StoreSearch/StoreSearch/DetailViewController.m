@@ -40,6 +40,9 @@
 {
     [super viewDidLoad];
     
+    // setting up a clear color to enhance the circular grandient from GradientView.m
+    self.view.backgroundColor = [UIColor clearColor];
+    
     // "rounding" the edges of the popup
     self.popUpView.layer.cornerRadius = 10.0f;
     
