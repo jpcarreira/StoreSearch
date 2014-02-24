@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SearchResult.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
+#import "GradientView.h"
 
 // this class doesn't need a delegate protocol because there's nothing to communicate back to the Search View Controller
 @interface DetailViewController ()<UIGestureRecognizerDelegate>
@@ -25,6 +26,10 @@
 @end
 
 @implementation DetailViewController
+{
+    // ivar to hold the gradient view object
+    GradientView *_gradientView;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -131,6 +136,13 @@
 // this method is responsible to show this viewcontroller as a child in another viewcontroller
 -(void)presentInParentViewController:(UIViewController *)parentViewController
 {
+    // initializing the gradient view and adding as a subview of SearchViewController
+    _gradientView = [[GradientView alloc] initWithFrame:parentViewController.view.bounds];
+    [parentViewController.view addSubview:_gradientView];
+    
+    // note that the gradient view was added to SearchViewController before we added DetailsViewController
+    // so the gradient view is still below the popup (as intended) but not affected by the animation
+    
     // 1 - standard parent-child relationships
     // resizing the DetailViewController's view size to the same as the SearchViewController
     self.view.frame = parentViewController.view.bounds;
@@ -179,6 +191,9 @@
     [self.view removeFromSuperview];
     // disposing this view controller
     [self removeFromParentViewController];
+    
+    // removing the gradient view when the popup is closed
+    [_gradientView removeFromSuperview];
 }
 
 
