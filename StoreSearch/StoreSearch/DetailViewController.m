@@ -128,27 +128,51 @@
 }
 
 
+// this method is responsible to show this viewcontroller as a child in another viewcontroller
 -(void)presentInParentViewController:(UIViewController *)parentViewController
 {
+    // 1 - standard parent-child relationships
     // resizing the DetailViewController's view size to the same as the SearchViewController
     self.view.frame = parentViewController.view.bounds;
-    
     // add the new view controller as a subview
     [parentViewController.view addSubview:self.view];
-    
     // tell the parent view controller that DetailsViewController is managing the screen
     [parentViewController addChildViewController:self];
     
-    // tell DetailsViewController that this controller is it's parent
-    [self didMoveToParentViewController:parentViewController];
+    
+    // 2 - animation
+    // creating an animation that works on the view's transforma.scale attributes
+    // (i.e., we're animating the size of the view)
+    CAKeyframeAnimation *bounceAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
+    
+    // setting the animation's delegate so that this view controller knows when the animation stops
+    // (so that we call the didMoveToParentViewController:)
+    bounceAnimation.delegate = self;
+    
+    // the animation has several keyframes and we set to 0.4 the time it takes to proceed from one keyframe to the other
+    bounceAnimation.duration = 0.4;
+    
+    // specifying how much bigger (or smaller) the view will be over time
+    // (in this case, scaling to 70% of normal size, followed by 120%, 90% and 100% (thus, the last one restores original size)
+    bounceAnimation.values = @[@0.7, @1.2, @0.9, @1.0];
+    
+    // specifying a duration for each keyframe
+    // (this values are fractions of the initial duration, thus the second one lasts 0.4*0.334)
+    bounceAnimation.keyTimes = @[@0.0, @0.334, @0.666, @1.0];
+    
+    // timing function to go from one keyframe to another
+    bounceAnimation.timingFunctions = @[
+                                    [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
+                                    [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
+                                    [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    
+    // adding the animation to the view's layer
+    [self.view.layer addAnimation:bounceAnimation forKey:@"bounceAnimation"];
 }
 
 
 -(void)dismissFromParentViewController
 {
-    // this won't work because the view controller isn't shown modally
-    //[self dismissViewControllerAnimated:YES completion:nil];
-    
     // taking away the parent controller (SearhViewController)
     [self willMoveToParentViewController:nil];
     // removing the view from the screen
@@ -177,6 +201,14 @@
 {
     // only returns YES when the touch is in the background
     return (touch.view == self.view);
+}
+
+
+# pragma mark - CAAnimation delegates
+-(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{
+    // tell DetailsViewController that this controller is it's parent
+    [self didMoveToParentViewController:self.parentViewController];
 }
 
 @end
