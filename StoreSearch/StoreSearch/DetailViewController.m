@@ -196,13 +196,24 @@
 {
     // taking away the parent controller (SearhViewController)
     [self willMoveToParentViewController:nil];
-    // removing the view from the screen
-    [self.view removeFromSuperview];
-    // disposing this view controller
-    [self removeFromParentViewController];
     
-    // removing the gradient view when the popup is closed
-    [_gradientView removeFromSuperview];
+    // popup basic animation (making the popup slide down the screen)
+    [UIView animateWithDuration:0.3 animations:
+     ^{
+         CGRect rect = self.view.bounds;
+         rect.origin.y += rect.size.height;
+         self.view.frame = rect;
+         _gradientView.alpha = 0.0f;
+    }
+    completion:
+     ^(BOOL finished)
+    {
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+        
+        // removing the gradient view when the popup is closed
+        [_gradientView removeFromSuperview];
+    }];
 }
 
 
