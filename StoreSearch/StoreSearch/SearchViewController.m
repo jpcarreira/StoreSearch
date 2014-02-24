@@ -7,16 +7,13 @@
 //
 
 #import "SearchViewController.h"
-
 // model class representing search results
 #import "SearchResult.h"
-
 // custom class representing the search cell designed in it's own nib
 #import "SearchResultCell.h"
-
 #import <AFNetworking/AFNetworking.h>
-
 #import "DetailViewController.h"
+#import "LandscapeViewController.h"
 
 // defining the cell identifier for the search result cell
 static NSString * const searchResultIdentifier = @"SearchResultCell";
@@ -52,6 +49,9 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     
     // ivar for NSOperation
     NSOperationQueue *_queue;
+    
+    // ivar for the landscape view controller
+    LandscapeViewController *_landscapeViewController;
 }
 
 
@@ -94,6 +94,24 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     
 #warning remove this later
     self.searchBar.text = @"Benfica";
+}
+
+
+// called before the interface begins rotating
+-(void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    // this is an override so we should call the superclass method
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    
+    // setting the correct controller to display according to orientation
+    if(UIInterfaceOrientationIsPortrait(toInterfaceOrientation))
+    {
+        [self hideLandscapeViewWithDuration:duration];
+    }
+    else
+    {
+        [self showLandscapeViewWithDuration:duration];
+    }
 }
 
 
@@ -343,6 +361,42 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         // this is a different queue from GCD (here we work with a NSOperationQueue object)
         // (this requires an instance variable that must be initialized in the init method)
         [_queue addOperation:operation];
+    }
+}
+
+
+// showing landscape view controller
+-(void)showLandscapeViewWithDuration:(NSTimeInterval)duration
+{
+    if(_landscapeViewController == nil)
+    {
+        // creating the view controller
+        _landscapeViewController = [[LandscapeViewController alloc] initWithNibName:@"LandscapeViewController" bundle:nil];
+        
+        // setting the framesize
+        _landscapeViewController.view.frame = self.view.bounds;
+        
+        // adding the created viewcontroller's view as subview of the "portrait" view controller
+        [self.view addSubview:_landscapeViewController.view];
+        
+        // defining the hierarchy
+        [self addChildViewController:_landscapeViewController];
+        [_landscapeViewController didMoveToParentViewController:self];
+    }
+}
+
+
+// hiding landscape view controller
+-(void)hideLandscapeViewWithDuration:(NSTimeInterval)duration
+{
+    if(_landscapeViewController != nil)
+    {
+        [_landscapeViewController willMoveToParentViewController:nil];
+        [_landscapeViewController.view removeFromSuperview];
+        [_landscapeViewController removeFromParentViewController];
+        
+        // explicit set to nil to deallocate the view controller
+        _landscapeViewController = nil;
     }
 }
 
