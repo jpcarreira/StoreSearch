@@ -152,7 +152,7 @@
     [parentViewController addChildViewController:self];
     
     
-    // 2 - animation
+    // 2 - animation of the popup
     // creating an animation that works on the view's transforma.scale attributes
     // (i.e., we're animating the size of the view)
     CAKeyframeAnimation *bounceAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
@@ -180,6 +180,15 @@
     
     // adding the animation to the view's layer
     [self.view.layer addAnimation:bounceAnimation forKey:@"bounceAnimation"];
+    
+    
+    // 3 - animation of the gradient view (simple "fade-in")
+    CABasicAnimation *fadeAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    fadeAnimation.fromValue = @0.0f;
+    fadeAnimation.toValue = @1.0f;
+    fadeAnimation.duration = 0.2f;
+    [_gradientView.layer addAnimation:fadeAnimation forKey:@"fadeAnimation"];
+    
 }
 
 
