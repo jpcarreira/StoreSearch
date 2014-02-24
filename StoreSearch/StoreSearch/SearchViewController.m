@@ -376,12 +376,25 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         // setting the framesize
         _landscapeViewController.view.frame = self.view.bounds;
         
+        // setting alpha to 0 (animation purpose)
+        _landscapeViewController.view.alpha = 0.0f;
+        
         // adding the created viewcontroller's view as subview of the "portrait" view controller
         [self.view addSubview:_landscapeViewController.view];
         
         // defining the hierarchy
         [self addChildViewController:_landscapeViewController];
-        [_landscapeViewController didMoveToParentViewController:self];
+        
+        // animation
+        [UIView animateWithDuration:duration animations:
+         ^{
+            _landscapeViewController.view.alpha = 1.0f;
+        }
+        completion:
+         ^(BOOL finished)
+        {
+            [_landscapeViewController didMoveToParentViewController:self];
+        }];
     }
 }
 
@@ -392,11 +405,21 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     if(_landscapeViewController != nil)
     {
         [_landscapeViewController willMoveToParentViewController:nil];
-        [_landscapeViewController.view removeFromSuperview];
-        [_landscapeViewController removeFromParentViewController];
         
-        // explicit set to nil to deallocate the view controller
-        _landscapeViewController = nil;
+        // animation
+        [UIView animateWithDuration:duration animations:
+         ^{
+            _landscapeViewController.view.alpha = 0.0f;
+        }
+        completion:
+         ^(BOOL finished)
+        {
+            [_landscapeViewController.view removeFromSuperview];
+            [_landscapeViewController removeFromParentViewController];
+            
+            // explicit set to nil to deallocate the view controller
+            _landscapeViewController = nil;
+        }];
     }
 }
 
