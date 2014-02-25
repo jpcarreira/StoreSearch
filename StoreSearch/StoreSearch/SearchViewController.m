@@ -51,10 +51,16 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     NSOperationQueue *_queue;
     
     // ivar for the landscape view controller
+    // (this ivar will allow to detect the device's current orientation)
     LandscapeViewController *_landscapeViewController;
     
     // ivar for the status bar style (which changes with device orientation)
     UIStatusBarStyle _statusBarStyle;
+    
+    // ivar for the details view controller
+    // (this ivar will allow to dismiss the DetailsViewController when going to landscap)
+    // (setting a weak pointer will allow the popup window to dealloc when we change to landscape)
+    __weak DetailViewController *_detailViewController;
 }
 
 
@@ -407,6 +413,12 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         {
             [_landscapeViewController didMoveToParentViewController:self];
         }];
+        
+        // hiding keyboard
+        [self.searchBar resignFirstResponder];
+        
+        // closing the popup
+        [_detailViewController dismissFromParentViewController];
     }
 }
 
@@ -589,6 +601,9 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
      */
     
     [controller presentInParentViewController:self];
+    
+    // updating the respective ivar
+    _detailViewController = controller;
 }
 
 

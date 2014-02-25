@@ -86,7 +86,7 @@
 -(void)dealloc
 {
     // just to make sure this view controller is properly dismissed when pressing close button
-    //NSLog(@"DetailViewController dealloc %@", self);
+    NSLog(@"DetailViewController DEALLOC %@", self);
     
     // canceling image download in case user closes the popup
     [self.artworkImageView cancelImageRequestOperation];
