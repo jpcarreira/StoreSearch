@@ -18,6 +18,12 @@
     {
         // setting the background to fully transparent
         self.backgroundColor = [UIColor clearColor];
+        
+        // auto-resizing
+        // (we can't use auto-layout because we don't have a nib)
+        // this will make the current view change its width and height proporcionally when the superview
+        // it belongs to changes its size as well (due to rotation to portrait/landscape)
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     }
     return self;
 }
