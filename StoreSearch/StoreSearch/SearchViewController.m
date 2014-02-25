@@ -52,6 +52,9 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     
     // ivar for the landscape view controller
     LandscapeViewController *_landscapeViewController;
+    
+    // ivar for the status bar style (which changes with device orientation)
+    UIStatusBarStyle _statusBarStyle;
 }
 
 
@@ -91,6 +94,9 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     
     // making the keyboard immediatly available
     [self.searchBar becomeFirstResponder];
+    
+    // setting a default status bar style
+    _statusBarStyle = UIStatusBarStyleDefault;
     
 #warning remove this later
     self.searchBar.text = @"Benfica";
@@ -368,6 +374,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 // showing landscape view controller
 -(void)showLandscapeViewWithDuration:(NSTimeInterval)duration
 {
+    // if it's nill it means we're in portrait and will transition to landscape
     if(_landscapeViewController == nil)
     {
         // creating the view controller
@@ -388,7 +395,12 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         // animation
         [UIView animateWithDuration:duration animations:
          ^{
+             // concerning the view controller itself
             _landscapeViewController.view.alpha = 1.0f;
+             
+             // concerning the status bar
+             _statusBarStyle = UIStatusBarStyleLightContent;
+             [self setNeedsStatusBarAppearanceUpdate];
         }
         completion:
          ^(BOOL finished)
@@ -402,6 +414,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 // hiding landscape view controller
 -(void)hideLandscapeViewWithDuration:(NSTimeInterval)duration
 {
+    // if it's not nil it means we're in landscape and transitioning to portrait
     if(_landscapeViewController != nil)
     {
         [_landscapeViewController willMoveToParentViewController:nil];
@@ -409,7 +422,12 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         // animation
         [UIView animateWithDuration:duration animations:
          ^{
+              // concerning the view controller itself
             _landscapeViewController.view.alpha = 0.0f;
+             
+             // concerning the status bar
+             _statusBarStyle = UIStatusBarStyleDefault;
+             [self setNeedsStatusBarAppearanceUpdate];
         }
         completion:
          ^(BOOL finished)
@@ -421,6 +439,13 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
             _landscapeViewController = nil;
         }];
     }
+}
+
+
+// returns current UIStatusBarStyle
+-(UIStatusBarStyle)preferredStatusBarStyle
+{
+    return _statusBarStyle;
 }
 
 
