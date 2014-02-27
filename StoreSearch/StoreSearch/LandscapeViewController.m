@@ -28,7 +28,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    
+    // putting an image in the scrollview background
+    self.scrollView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"LandscapeBackground"]];
+    
+    // setting how big the "insides" of the scrollview will be
+    self.scrollView.contentSize = CGSizeMake(1000, self.scrollView.bounds.size.height);
 }
 
 
