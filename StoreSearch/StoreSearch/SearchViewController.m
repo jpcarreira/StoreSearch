@@ -418,7 +418,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         [self.searchBar resignFirstResponder];
         
         // closing the popup
-        [_detailViewController dismissFromParentViewController];
+        [_detailViewController dismissFromParentViewControllerWithAnimationType:DetailViewControllerAnimationTypeFade];
     }
 }
 

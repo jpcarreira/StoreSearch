@@ -86,7 +86,7 @@
 -(void)dealloc
 {
     // just to make sure this view controller is properly dismissed when pressing close button
-    NSLog(@"DetailViewController DEALLOC %@", self);
+    //NSLog(@"DetailViewController DEALLOC %@", self);
     
     // canceling image download in case user closes the popup
     [self.artworkImageView cancelImageRequestOperation];
@@ -192,17 +192,25 @@
 }
 
 
--(void)dismissFromParentViewController
+-(void)dismissFromParentViewControllerWithAnimationType:(DetailViewControllerAnimationType)animationType
 {
     // taking away the parent controller (SearhViewController)
     [self willMoveToParentViewController:nil];
     
     // popup basic animation (making the popup slide down the screen)
-    [UIView animateWithDuration:0.3 animations:
+    [UIView animateWithDuration:0.4 animations:
      ^{
-         CGRect rect = self.view.bounds;
-         rect.origin.y += rect.size.height;
-         self.view.frame = rect;
+         if(animationType == DetailViewControllerAnimationTypeSlide)
+         {
+             CGRect rect = self.view.bounds;
+             rect.origin.y += rect.size.height;
+             self.view.frame = rect;
+         }
+         else
+         {
+             self.view.alpha = 0.0f;
+         }
+         
          _gradientView.alpha = 0.0f;
     }
     completion:
@@ -221,7 +229,7 @@
 
 -(IBAction)close:(id)sender
 {
-    [self dismissFromParentViewController];
+    [self dismissFromParentViewControllerWithAnimationType:DetailViewControllerAnimationTypeSlide];
 }
 
 -(IBAction)openInStore:(id)sender

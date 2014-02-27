@@ -41,7 +41,7 @@
 
 -(void)dealloc
 {
-    NSLog(@"LandscapeViewController DEALLOC '%@'", self);
+    //NSLog(@"LandscapeViewController DEALLOC '%@'", self);
 }
 
 

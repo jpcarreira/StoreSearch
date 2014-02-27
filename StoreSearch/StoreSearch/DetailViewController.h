@@ -10,6 +10,13 @@
 
 @class SearchResult;
 
+// enum for dismiss animation
+typedef NS_ENUM(NSUInteger, DetailViewControllerAnimationType)
+{
+    DetailViewControllerAnimationTypeSlide,
+    DetailViewControllerAnimationTypeFade
+};
+
 @interface DetailViewController : UIViewController
 
 // the SearchResult object should be put in this public interface as there is another object, the SearchViewController,
@@ -17,6 +24,6 @@
 @property (nonatomic, strong) SearchResult *searchResult;
 
 -(void)presentInParentViewController:(UIViewController *)parentViewController;
--(void)dismissFromParentViewController;
+-(void)dismissFromParentViewControllerWithAnimationType:(DetailViewControllerAnimationType)animationType;
 
 @end
