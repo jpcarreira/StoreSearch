@@ -171,8 +171,15 @@
 // there's no delegate that tells when the user taps the page control so we need to set an IBAction
 -(IBAction)pageChanged:(UIPageControl *)sender
 {
-    // calculating the new offset when the user taps in the page control
-    self.scrollView.contentOffset = CGPointMake(self.scrollView.bounds.size.width * sender.currentPage, 0);
+    // setting up a basic animation
+    [UIView animateWithDuration:0.3
+    delay:0
+    options:UIViewAnimationOptionCurveEaseInOut
+    animations:
+     ^{
+        // calculating the new offset when the user taps in the page control
+        self.scrollView.contentOffset = CGPointMake(self.scrollView.bounds.size.width * sender.currentPage, 0);
+     }completion:nil];
 }
 
 
