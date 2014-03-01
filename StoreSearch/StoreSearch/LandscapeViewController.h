@@ -10,6 +10,8 @@
 
 @interface LandscapeViewController : UIViewController
 
+@property(nonatomic, strong) NSArray *searchResults;
+
 @property(nonatomic, weak) IBOutlet UIScrollView *scrollView;
 @property(nonatomic, weak) IBOutlet UIPageControl *pageControl;
 

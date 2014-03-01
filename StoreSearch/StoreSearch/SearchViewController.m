@@ -386,6 +386,9 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         // creating the view controller
         _landscapeViewController = [[LandscapeViewController alloc] initWithNibName:@"LandscapeViewController" bundle:nil];
         
+        // "passing" the seach results to the controller
+        _landscapeViewController.searchResults = _searchResults;
+        
         // setting the framesize
         _landscapeViewController.view.frame = self.view.bounds;
         
