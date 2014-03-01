@@ -9,7 +9,7 @@
 #import "LandscapeViewController.h"
 #import "SearchResult.h"
 
-@interface LandscapeViewController ()
+@interface LandscapeViewController ()<UIScrollViewDelegate>
 
 @end
 
@@ -41,6 +41,9 @@
     
     // setting how big the "insides" of the scrollview will be
     //self.scrollView.contentSize = CGSizeMake(1000, self.scrollView.bounds.size.height);
+    
+    // hiding the page control when there's no search results
+    self.pageControl.numberOfPages = 0;
 }
 
 
@@ -154,8 +157,36 @@
     
     self.scrollView.contentSize = CGSizeMake(numPages * scrollViewWidth, self.scrollView.bounds.size.height);
     
+    // setting the number of dots to be displayed by page control
+    self.pageControl.numberOfPages = numPages;
+    self.pageControl.currentPage = 0;
+    
     NSLog(@"Screen size = %f", scrollViewWidth);
     NSLog(@"Number of pages = %d", numPages);
+}
+
+
+#pragma mark - Action methods
+
+// there's no delegate that tells when the user taps the page control so we need to set an IBAction
+-(IBAction)pageChanged:(UIPageControl *)sender
+{
+    // calculating the new offset when the user taps in the page control
+    self.scrollView.contentOffset = CGPointMake(self.scrollView.bounds.size.width * sender.currentPage, 0);
+}
+
+
+#pragma mark - ScrollView delegate
+
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    CGFloat width = self.scrollView.bounds.size.width;
+    
+    // the contentOffset property determines how far the scroll view has been scrolled
+    // if the contentOffset gets beyond halfway on the page the scroll view will flick to the next page
+    int currentPage = (self.scrollView.contentOffset.x + width / 2.0f) / width;
+    self.pageControl.currentPage = currentPage;
 }
 
 @end
