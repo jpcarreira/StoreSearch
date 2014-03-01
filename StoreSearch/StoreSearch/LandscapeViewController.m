@@ -8,6 +8,7 @@
 
 #import "LandscapeViewController.h"
 #import "SearchResult.h"
+#import <AFNetworking/UIButton+AFNetworking.h>
 
 @interface LandscapeViewController ()<UIScrollViewDelegate>
 
@@ -71,7 +72,13 @@
 
 -(void)dealloc
 {
-    //NSLog(@"LandscapeViewController DEALLOC '%@'", self);
+    NSLog(@"DEALLOC '%@'", self);
+    
+    // cancel all image donwloading for buttons
+    for(UIButton *button in self.scrollView.subviews)
+    {
+        [button cancelImageRequestOperation];
+    }
 }
 
 
@@ -118,10 +125,13 @@
     // foreach loop to go through all search results
     for(SearchResult *searchResult in self.searchResults)
     {
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-        button.backgroundColor = [UIColor whiteColor];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         
-        [button setTitle:[NSString stringWithFormat:@"%d", index] forState:UIControlStateNormal];
+        // button image
+        [self downloadImageForSearchResult:searchResult andPlaceOnButton:button];
+        
+        // background image
+        [button setBackgroundImage:[UIImage imageNamed:@"LandscapeButton"] forState:UIControlStateNormal];
         
         // when making a button programatically we need to set it's frame
         button.frame = CGRectMake(x + marginHor, 20.0f + row * itemHeight + marginVert, buttonWidth, buttonHeight);
@@ -165,6 +175,41 @@
     NSLog(@"Number of pages = %d", numPages);
 }
 
+
+// getting the artwork image on a button
+-(void)downloadImageForSearchResult:(SearchResult *)searchResult andPlaceOnButton:(UIButton *)button
+{
+    NSURL *url = [NSURL URLWithString:searchResult.artworkURL60];
+    
+    // creating the NSMutableRequest (as it's done in UIButton+AFNetworking source code)
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+    
+    // the following setImageForState:withURLRequest:placeholderImage:success:failure has an ownership cycle
+    // (inside the block we place the image on the button which means the block captures the button while
+    // the button already owns the block)
+    // this can lead to a memory leak so we'll use a weak pointer
+    // (with this weak pointer the button still owns the block but the block doesn't own the button back)
+    __weak UIButton *weakButton = button;
+    
+    
+    
+    // downloading the image
+    [button setImageForState:UIControlStateNormal
+              withURLRequest:request
+            placeholderImage:nil
+                     success:^(NSHTTPURLResponse *response, UIImage *image)
+                            {
+                            // scaling the image and placing it in the button (1.0 means not to treat it as a retina image)
+                            UIImage *unscaledImage = [UIImage imageWithCGImage:image.CGImage scale:1.0 orientation:image.imageOrientation];
+        
+                            [weakButton setImage:unscaledImage forState:UIControlStateNormal];
+                            }
+                     failure:^(NSError *error)
+                        {
+                            NSLog(@"failed: %@", error);
+                        }];
+}
 
 #pragma mark - Action methods
 
