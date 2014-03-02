@@ -8,6 +8,12 @@
 
 #import "Search.h"
 #import "SearchResult.h"
+#import <AFNetworking/AFNetworking.h>
+
+// class variable (i.e., global variable)
+// (a class variable lasts even when the object is deleted)
+// static means this global variable is only visible to this class
+static NSOperationQueue *queue = nil;
 
 // class extension
 // in the .h the searchResults is a readonly property, but here we want this property to be readwrite
@@ -29,11 +35,45 @@
 
 #pragma mark - Instance Methods
 
--(void)performSearchForText:(NSString *)text category:(NSInteger *)category
+// class method to initialize the class variable
++(void)initialize
 {
-    NSLog(@"searching...");
+    if(self == [Search class])
+    {
+        queue = [[NSOperationQueue alloc] init];
+    }
 }
 
+-(void)performSearchForText:(NSString *)text category:(NSInteger)category completion:(SearchBlock)block
+{
+   if([text length] > 0)
+   {
+       [queue cancelAllOperations];
+       
+       self.isLoading = YES;
+       self.searchResults = [NSMutableArray arrayWithCapacity:10];
+       
+       NSURL *url = [self urlWithSearchText:text category:category];
+       NSURLRequest *request = [NSURLRequest requestWithURL:url];
+       
+       AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+       operation.responseSerializer = [AFJSONResponseSerializer serializer];
+       
+       [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject){
+           [self parseDictionary:responseObject];
+           [self.searchResults sortUsingSelector:@selector(compareName:)];
+           self.isLoading = NO;
+           block(YES);
+           NSLog(@"sucess...");
+       }failure:^(AFHTTPRequestOperation *operation, NSError *error){
+           self.isLoading = NO;
+           block(NO);
+           NSLog(@"failed");
+       }];
+       
+       [queue addOperation:operation];
+   }
+}
 
 
 // builds a url from standard string to query iTunes webservice

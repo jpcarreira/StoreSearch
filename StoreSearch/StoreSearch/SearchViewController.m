@@ -142,7 +142,13 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     NSLog(@"allocated...");
     
     // performing the search as responsability of the Search object
-    [_search performSearchForText:self.searchBar.text category:self.segmentedControl.selectedSegmentIndex];
+    [_search performSearchForText:self.searchBar.text category:self.segmentedControl.selectedSegmentIndex completion:^(BOOL success){
+        if(!success)
+        {
+            [self showNetworkError];
+        }
+        [self.tableView reloadData];
+    }];
     
     // reloading table
     [self.tableView reloadData];
