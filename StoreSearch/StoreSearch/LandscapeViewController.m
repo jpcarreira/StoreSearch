@@ -72,7 +72,7 @@
 
 -(void)dealloc
 {
-    NSLog(@"DEALLOC '%@'", self);
+    //NSLog(@"DEALLOC '%@'", self);
     
     // cancel all image donwloading for buttons
     for(UIButton *button in self.scrollView.subviews)
@@ -170,9 +170,6 @@
     // setting the number of dots to be displayed by page control
     self.pageControl.numberOfPages = numPages;
     self.pageControl.currentPage = 0;
-    
-    NSLog(@"Screen size = %f", scrollViewWidth);
-    NSLog(@"Number of pages = %d", numPages);
 }
 
 
