@@ -33,6 +33,7 @@
 		62B7A69F18B5222300B54F14 /* SearchResultCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 62B7A69E18B5222300B54F14 /* SearchResultCell.m */; };
 		62B7A6A318B533AA00B54F14 /* NothingFoundCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 62B7A6A218B533AA00B54F14 /* NothingFoundCell.xib */; };
 		62B7A6A618B539DF00B54F14 /* NothingFoundCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 62B7A6A518B539DF00B54F14 /* NothingFoundCell.m */; };
+		62F2A2BC18C3784C002DD4A2 /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 62F2A2BB18C3784C002DD4A2 /* Search.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +85,8 @@
 		62B7A6A218B533AA00B54F14 /* NothingFoundCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NothingFoundCell.xib; sourceTree = "<group>"; };
 		62B7A6A418B539DF00B54F14 /* NothingFoundCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NothingFoundCell.h; sourceTree = "<group>"; };
 		62B7A6A518B539DF00B54F14 /* NothingFoundCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NothingFoundCell.m; sourceTree = "<group>"; };
+		62F2A2BA18C3784C002DD4A2 /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Search.h; sourceTree = "<group>"; };
+		62F2A2BB18C3784C002DD4A2 /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Search.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +121,8 @@
 				62B7A69918B5154400B54F14 /* SearchResult.m */,
 				6296F21818BA3024004F5C07 /* GradientView.h */,
 				6296F21918BA3024004F5C07 /* GradientView.m */,
+				62F2A2BA18C3784C002DD4A2 /* Search.h */,
+				62F2A2BB18C3784C002DD4A2 /* Search.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -371,6 +376,7 @@
 				62B6D6DE18BB7D9100AE15DF /* LandscapeViewController.m in Sources */,
 				62B7A69F18B5222300B54F14 /* SearchResultCell.m in Sources */,
 				62B7A69A18B5154400B54F14 /* SearchResult.m in Sources */,
+				62F2A2BC18C3784C002DD4A2 /* Search.m in Sources */,
 				62B7A66818B4DE9300B54F14 /* main.m in Sources */,
 				625AB79B18B8E30600CB4210 /* DetailViewController.m in Sources */,
 			);

@@ -14,6 +14,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import "DetailViewController.h"
 #import "LandscapeViewController.h"
+#import "Search.h"
 
 // defining the cell identifier for the search result cell
 static NSString * const searchResultIdentifier = @"SearchResultCell";
@@ -41,14 +42,8 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 {
     // ivars
     
-    // ivar for "fake data"
-    NSMutableArray *_searchResults;
-    
-    // ivar to check is the app is loading data
-    BOOL _isLoading;
-    
-    // ivar for NSOperation
-    NSOperationQueue *_queue;
+    // ivar for Search object
+    Search *_search;
     
     // ivar for the landscape view controller
     // (this ivar will allow to detect the device's current orientation)
@@ -61,17 +56,6 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     // (this ivar will allow to dismiss the DetailsViewController when going to landscap)
     // (setting a weak pointer will allow the popup window to dealloc when we change to landscape)
     __weak DetailViewController *_detailViewController;
-}
-
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self)
-    {
-        _queue = [[NSOperationQueue alloc] init];
-    }
-    return self;
 }
 
 
@@ -137,173 +121,6 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 # pragma mark - instance methods
 
 
-// builds a url from standard string to query iTunes webservice
--(NSURL *)urlWithSearchText:(NSString *)searchText category:(NSInteger)category
-{
-    // getting the category according to segmented control index
-    NSString *categoryName;
-    switch(category)
-    {
-        case 0:
-            categoryName = @"";
-            break;
-        case 1:
-            categoryName = @"musicTrack";
-            break;
-        case 2:
-            categoryName = @"software";
-            break;
-        case 3:
-            categoryName = @"ebook";
-            break;
-    }
-    
-    // encoding URL from search text (UTF8)
-    NSString *escapedSearchText = [searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *urlString = [NSString stringWithFormat:@"http://itunes.apple.com/search?term=%@&limit=200&entity=%@", escapedSearchText, categoryName];
-    
-    //NSLog(@"Index=%i\nCategory='%@'\nURL = '%@'", category, categoryName, urlString);
-    
-    return [NSURL URLWithString:urlString];
-}
-
-
-// parses the dictionary as the iTunes store as different json data structures according to the products
-// the products will be distinguished according to 'kind' and 'wrapperType'
--(void)parseDictionary:(NSDictionary *)dictionary
-{
-    // the key 'results' corresponds to an array
-    NSArray *array = dictionary[@"results"];
-    
-    // making sure the key 'results' actually exists
-    if(array == nil)
-    {
-        NSLog(@"Expected 'results' array");
-        return;
-    }
-    
-    // printing results
-    for(NSDictionary *resultDict in array)
-    {
-        //NSLog(@"WrapperType: %@, kind: %@", resultDict[@"wrapperType"], resultDict[@"kind"]);
-        
-        SearchResult *searchResult;
-        
-        // getting 'wrapperType' and 'kind' (ebooks don't have a 'wrapper type' so we need to use 'kind' to identify them)
-        NSString *wrapperType = resultDict[@"wrapperType"];
-        NSString *kind = resultDict[@"kind"];
-        
-        // calling the respective parsing method
-        if([wrapperType isEqualToString:@"track"])
-        {
-            searchResult = [self parseTrack:resultDict];
-        }
-        else if([wrapperType isEqualToString:@"audiobook"])
-        {
-            searchResult = [self parseAudioBook:resultDict];
-        }
-        else if([wrapperType isEqualToString:@"software"])
-        {
-            searchResult = [self parseSoftware:resultDict];
-        }
-        else if([kind isEqualToString:@"ebook"])
-        {
-            searchResult = [self parseEBook:resultDict];
-        }
-        
-        // adding to array with results
-        if(searchResult != nil)
-        {
-            [_searchResults addObject:searchResult];
-        }
-    
-    }
-}
-
-
-// parsing tracks
--(SearchResult *)parseTrack:(NSDictionary *)dictionary
-{
-    SearchResult *searchResult = [[SearchResult alloc] init];
-    
-    // parsing desired info from tracks dictionary
-    searchResult.name = dictionary[@"trackName"];
-    searchResult.artistName = dictionary[@"artistName"];
-    searchResult.artworkURL60 = dictionary[@"artworkUrl60"];
-    searchResult.artworkURL100 = dictionary[@"artworkUrl100"];
-    searchResult.storeURL = dictionary[@"trackViewUrl"];
-    searchResult.kind = dictionary[@"kind"];
-    searchResult.price = dictionary[@"trackPrice"];
-    searchResult.currency = dictionary[@"currency"];
-    searchResult.genre = dictionary[@"primaryGenreName"];
-    
-    return searchResult;
-}
-
-
-// parsing audio books
--(SearchResult *)parseAudioBook:(NSDictionary *)dictionary
-{
-    SearchResult *searchResult = [[SearchResult alloc] init];
-    
-    // parsing desired info from tracks dictionary
-    searchResult.name = dictionary[@"collectionName"];
-    searchResult.artistName = dictionary[@"artistName"];
-    searchResult.artworkURL60 = dictionary[@"artworkUrl60"];
-    searchResult.artworkURL100 = dictionary[@"artworkUrl100"];
-    searchResult.storeURL = dictionary[@"collectionViewUrl"];
-    // audiobooks don't have a kind field so we have to set it manually
-    searchResult.kind = @"audiobook";
-    searchResult.price = dictionary[@"collectionPrice"];
-    searchResult.currency = dictionary[@"currency"];
-    searchResult.genre = dictionary[@"primaryGenreName"];
-    
-    return searchResult;
-}
-
-
-// parsing apps
--(SearchResult *)parseSoftware:(NSDictionary *)dictionary
-{
-    SearchResult *searchResult = [[SearchResult alloc] init];
-    
-    // parsing desired info from tracks dictionary
-    searchResult.name = dictionary[@"trackName"];
-    searchResult.artistName = dictionary[@"artistName"];
-    searchResult.artworkURL60 = dictionary[@"artworkUrl60"];
-    searchResult.artworkURL100 = dictionary[@"artworkUrl100"];
-    searchResult.storeURL = dictionary[@"trackViewUrl"];
-    searchResult.kind = dictionary[@"kind"];
-    searchResult.price = dictionary[@"price"];
-    searchResult.currency = dictionary[@"currency"];
-    searchResult.genre = dictionary[@"primaryGenreName"];
-    
-    return searchResult;
-}
-
-
-// parsing ebooks
--(SearchResult *)parseEBook:(NSDictionary *)dictionary
-{
-    SearchResult *searchResult = [[SearchResult alloc] init];
-    
-    // parsing desired info from tracks dictionary
-    searchResult.name = dictionary[@"trackName"];
-    searchResult.artistName = dictionary[@"artistName"];
-    searchResult.artworkURL60 = dictionary[@"artworkUrl60"];
-    searchResult.artworkURL100 = dictionary[@"artworkUrl100"];
-    searchResult.storeURL = dictionary[@"trackViewUrl"];
-    searchResult.kind = dictionary[@"kind"];
-    searchResult.price = dictionary[@"price"];
-    searchResult.currency = dictionary[@"currency"];
-    // ebooks don't have a 'primaryGenreName' but an array of genres so we have to set it manually
-    // (we picks all elements in the array and join them in a single string)
-    searchResult.genre = [(NSArray *)dictionary[@"genre"] componentsJoinedByString:@", "];
-    
-    return searchResult;
-}
-
-
 // handles network errors
 -(void)showNetworkError
 {
@@ -320,60 +137,18 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 // search logic
 -(void)performSearch
 {
-    if([self.searchBar.text length] > 0)
-    {
-        [self.searchBar resignFirstResponder];
-        
-        // canceling any previous ongoing request
-        // (this will invoke the failure block of AFNetworking)
-        [_queue cancelAllOperations];
-        
-        _isLoading = YES;
-        [self.tableView reloadData];
-        
-        _searchResults = [NSMutableArray arrayWithCapacity:10];
-        
-        // creating the NSURL object and putting it in NSURLRequest
-        NSURL *url = [self urlWithSearchText:self.searchBar.text category:self.segmentedControl.selectedSegmentIndex];
-        NSURLRequest *request = [NSURLRequest requestWithURL:url];
-        
-        // AFHTTPRequestOperation takes 2 blocks
-        AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-        operation.responseSerializer = [AFJSONResponseSerializer serializer];
-        
-        // both blocks can call UIKit methods because they run in the main thread
-        // (check AFNetworking documentation)
-        [operation setCompletionBlockWithSuccess:
-         // success block
-         ^(AFHTTPRequestOperation *operation, id responseObject)
-         {
-             // taking the responseObject and parsing it
-             [self parseDictionary:responseObject];
-             [_searchResults sortUsingSelector:@selector(compareName:)];
-             
-             _isLoading = NO;
-             [self.tableView reloadData];
-         }
-         // failure block (when there's a network error or not a valid JSON object)
-                                         failure:^(AFHTTPRequestOperation *operation, NSError *error)
-         {
-             //this block is also called when the operations is cancelled so we need to prevent error display in this case
-             if(operation.isCancelled)
-             {
-                 return;
-             }
-             
-             // feedback to user if something goes wrong
-             [self showNetworkError];
-             
-             _isLoading = NO;
-             [self.tableView reloadData];
-         }];
-        
-        // this is a different queue from GCD (here we work with a NSOperationQueue object)
-        // (this requires an instance variable that must be initialized in the init method)
-        [_queue addOperation:operation];
-    }
+    // creating the Search object
+    _search = [[Search alloc] init];
+    NSLog(@"allocated...");
+    
+    // performing the search as responsability of the Search object
+    [_search performSearchForText:self.searchBar.text category:self.segmentedControl.selectedSegmentIndex];
+    
+    // reloading table
+    [self.tableView reloadData];
+    
+    // dismissing keyboard
+    [self.searchBar resignFirstResponder];
 }
 
 
@@ -387,7 +162,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         _landscapeViewController = [[LandscapeViewController alloc] initWithNibName:@"LandscapeViewController" bundle:nil];
         
         // "passing" the seach results to the controller
-        _landscapeViewController.searchResults = _searchResults;
+        _landscapeViewController.search = _search;
         
         // setting the framesize
         _landscapeViewController.view.frame = self.view.bounds;
@@ -469,7 +244,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 -(IBAction)segmentChanged:(UISegmentedControl *)sender
 {
     // only searches if there's a previous search
-    if(_searchResults != nil)
+    if(_search != nil)
     {
         [self performSearch];
     }
@@ -481,22 +256,24 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // if it's loading data will display a single cell (loading cell)
-    if(_isLoading)
-    {
-        return 1;
-    }
-    else if(_searchResults == nil)
+    // haven't searched yet
+    if(_search == nil)
     {
         return 0;
     }
-    else if([_searchResults count] == 0)
+    // if it's loading data will display a single cell (loading cell)
+    else if(_search.isLoading)
+    {
+        return 1;
+    }
+    // nothing found on the search
+    else if([_search.searchResults count] == 0)
     {
         return 1;
     }
     else
     {
-        return [_searchResults count];
+        return [_search.searchResults count];
     }
     
 }
@@ -515,7 +292,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     // passing along the indexPath will work in this case because we registered the nib in viewDidLoad
     
     // display "loading cell" if the app is loading data from the webservice
-    if(_isLoading)
+    if(_search.isLoading)
     {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:loadingCellIdentifier forIndexPath:indexPath];
         
@@ -526,7 +303,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     }
     
     // returning a "nothing found" cell if the array is empty
-    else if([_searchResults count] == 0)
+    else if([_search.searchResults count] == 0)
     {
         return [tableView dequeueReusableCellWithIdentifier:nothingFoundIdentifier forIndexPath:indexPath];
     }
@@ -537,7 +314,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
         SearchResultCell *cell = (SearchResultCell *)[tableView dequeueReusableCellWithIdentifier:searchResultIdentifier forIndexPath:indexPath];
         
         // getting the search result
-        SearchResult *searchResult = _searchResults[indexPath.row];
+        SearchResult *searchResult = _search.searchResults[indexPath.row];
         
         // configuring the cell
         [cell configureForSearchResult:searchResult];
@@ -584,7 +361,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     DetailViewController *controller = [[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:nil];
     
     // setting the controller's SearchResult with the current one
-    SearchResult *searchResult = _searchResults[indexPath.row];
+    SearchResult *searchResult = _search.searchResults[indexPath.row];
     controller.searchResult = searchResult;
     
     // all the code below was moved to DetailsViewController
@@ -614,7 +391,7 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
 // (this way we can't pick a cell that shows 'no results found' or 'loading')
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if([_searchResults count] == 0 || _isLoading)
+    if([_search.searchResults count] == 0 || _search.isLoading)
     {
         return nil;
     }

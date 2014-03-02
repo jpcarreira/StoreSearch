@@ -9,6 +9,7 @@
 #import "LandscapeViewController.h"
 #import "SearchResult.h"
 #import <AFNetworking/UIButton+AFNetworking.h>
+#import "Search.h"
 
 @interface LandscapeViewController ()<UIScrollViewDelegate>
 
@@ -123,7 +124,7 @@
     int column = 0;
     
     // foreach loop to go through all search results
-    for(SearchResult *searchResult in self.searchResults)
+    for(SearchResult *searchResult in self.search.searchResults)
     {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         
@@ -163,7 +164,7 @@
     int tilesPerPage = columnsPerPage * 3;
     
     // ceilf allows to round up because even if there's a remainder of just one search result we have to a make another extra page
-    int numPages = ceilf([self.searchResults count]) / (float)tilesPerPage;
+    int numPages = ceilf([self.search.searchResults count]) / (float)tilesPerPage;
     
     self.scrollView.contentSize = CGSizeMake(numPages * scrollViewWidth, self.scrollView.bounds.size.height);
     
