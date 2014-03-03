@@ -59,6 +59,15 @@
     if(_firstTime)
     {
         _firstTime = NO;
+        
+        // showing a spinner when the search is performing
+        if(self.search != nil)
+        {
+            if(self.search.isLoading)
+            {
+                [self showSpinner];
+            }
+        }
         [self tileButtons];
     }
 }
@@ -208,6 +217,37 @@
                             NSLog(@"failed: %@", error);
                         }];
 }
+
+
+-(void)showSpinner
+{
+    // creating the spinner
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    
+    // putting it in the center of the screen
+    spinner.center = CGPointMake(CGRectGetMidX(self.scrollView.bounds) + 0.5f, CGRectGetMidY(self.scrollView.bounds) + 0.5f);
+    
+    // tagging the spinner (to facilitate it's removal when needed)
+    spinner.tag = 1000;
+    
+    // adding it to the screen
+    [self.view addSubview:spinner];
+    [spinner startAnimating];
+}
+
+
+-(void)searchResultsReceived
+{
+    [self hideSpinner];
+    [self tileButtons];
+}
+
+
+-(void)hideSpinner
+{
+    [[self.view viewWithTag:1000] removeFromSuperview];
+}
+
 
 #pragma mark - Action methods
 

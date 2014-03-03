@@ -17,4 +17,6 @@
 @property(nonatomic, weak) IBOutlet UIScrollView *scrollView;
 @property(nonatomic, weak) IBOutlet UIPageControl *pageControl;
 
+-(void)searchResultsReceived;
+
 @end
