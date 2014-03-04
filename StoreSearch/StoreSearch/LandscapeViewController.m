@@ -10,6 +10,7 @@
 #import "SearchResult.h"
 #import <AFNetworking/UIButton+AFNetworking.h>
 #import "Search.h"
+#import "DetailViewController.h"
 
 @interface LandscapeViewController ()<UIScrollViewDelegate>
 
@@ -176,6 +177,11 @@
                 x += extraSpace;
             }
         }
+        
+        // tagging the button and adding the appropriate action method
+        // (first tag will start at 2000 for convenience)
+        button.tag = 2000 + index;
+        [button addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
     }
     
     int tilesPerPage = columnsPerPage * 3;
@@ -258,7 +264,6 @@
     {
         [self tileButtons];
     }
-    
 }
 
 
@@ -305,6 +310,21 @@
         // calculating the new offset when the user taps in the page control
         self.scrollView.contentOffset = CGPointMake(self.scrollView.bounds.size.width * sender.currentPage, 0);
      }completion:nil];
+}
+
+
+// shows the popup when tapping a button
+-(void)buttonPressed:(UIButton *)sender
+{
+    // creating the detail view controller
+    DetailViewController *controller = [[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:nil];
+    
+    // -2000 because in tileButtons: we started tagging at 2000 (and not 0)
+    SearchResult *searchResult = self.search.searchResults[sender.tag - 2000];
+    controller.searchResult = searchResult;
+    
+    // showing the controller in the screen
+    [controller presentInParentViewController:self];
 }
 
 
