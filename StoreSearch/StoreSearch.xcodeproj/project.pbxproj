@@ -52,6 +52,7 @@
 		2FB7773EE6A84B968D536214 /* Pods-StoreSearch.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreSearch.xcconfig"; path = "Pods/Pods-StoreSearch.xcconfig"; sourceTree = "<group>"; };
 		62356A9E18C60CED0021A048 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		62356AA118C611290021A048 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		62356AA218C614F20021A048 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		625AB79818B8E30600CB4210 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		625AB79918B8E30600CB4210 /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		6294296018C5F73E006581E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/NothingFoundCell.xib; sourceTree = "<group>"; };
@@ -442,6 +443,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				62B7A66518B4DE9300B54F14 /* en */,
+				62356AA218C614F20021A048 /* pt-PT */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
