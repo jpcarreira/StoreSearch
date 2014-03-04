@@ -320,7 +320,7 @@
     DetailViewController *controller = [[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:nil];
     
     // -2000 because in tileButtons: we started tagging at 2000 (and not 0)
-    SearchResult *searchResult = self.search.searchResults[sender.tag - 2000];
+    SearchResult *searchResult = self.search.searchResults[sender.tag - 2001];
     controller.searchResult = searchResult;
     
     // showing the controller in the screen
