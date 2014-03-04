@@ -67,8 +67,16 @@
             {
                 [self showSpinner];
             }
+            // no results
+            else if([self.search.searchResults count] == 0)
+            {
+                [self showNothingFoundLabel];
+            }
+            else
+            {
+                [self tileButtons];
+            }
         }
-        [self tileButtons];
     }
 }
 
@@ -239,13 +247,47 @@
 -(void)searchResultsReceived
 {
     [self hideSpinner];
-    [self tileButtons];
+    
+    // when there's no results
+    if([self.search.searchResults count] == 0)
+    {
+        [self showNothingFoundLabel];
+    }
+    // otherwise display buttons
+    else
+    {
+        [self tileButtons];
+    }
+    
 }
 
 
 -(void)hideSpinner
 {
     [[self.view viewWithTag:1000] removeFromSuperview];
+}
+
+
+-(void)showNothingFoundLabel
+{
+    // creating the label
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.text = @"Nothing found";
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor whiteColor];
+    
+    // resizing to optimal size
+    [label sizeToFit];
+    
+    // centering the label
+    CGRect rect = label.frame;
+    rect.size.width = ceilf(rect.size.width / 2.0f) * 2.0f;
+    rect.size.height = ceilf(rect.size.height / 2.0f) * 2.0f;
+    label.frame = rect;
+    label.center = CGPointMake(CGRectGetMidX(self.scrollView.bounds), CGRectGetMidY(self.scrollView.bounds));
+    
+    // adding the label to the view
+    [self.view addSubview:label];
 }
 
 
