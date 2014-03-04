@@ -1,0 +1,15 @@
+
+/* Class = "IBUISearchBar"; placeholder = "App name, artist, song, album, ebook"; ObjectID = "2TN-Np-Muq"; */
+"2TN-Np-Muq.placeholder" = "Título, artista, música, album, livro";
+
+/* Class = "IBUISegmentedControl"; tz7-MD-Vqc.segmentTitles[0] = "All"; ObjectID = "tz7-MD-Vqc"; */
+"tz7-MD-Vqc.segmentTitles[0]" = "Todos";
+
+/* Class = "IBUISegmentedControl"; tz7-MD-Vqc.segmentTitles[1] = "Music"; ObjectID = "tz7-MD-Vqc"; */
+"tz7-MD-Vqc.segmentTitles[1]" = "Musica";
+
+/* Class = "IBUISegmentedControl"; tz7-MD-Vqc.segmentTitles[2] = "Software"; ObjectID = "tz7-MD-Vqc"; */
+"tz7-MD-Vqc.segmentTitles[2]" = "Software";
+
+/* Class = "IBUISegmentedControl"; tz7-MD-Vqc.segmentTitles[3] = "E-books"; ObjectID = "tz7-MD-Vqc"; */
+"tz7-MD-Vqc.segmentTitles[3]" = "Livros";
