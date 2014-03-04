@@ -97,11 +97,16 @@ static NSOperationQueue *queue = nil;
             break;
     }
     
+    // sending information about the user's language and regional settings
+    NSLocale *locale = [NSLocale autoupdatingCurrentLocale];
+    NSString *language = [locale localeIdentifier];
+    NSString *countryCode = [locale objectForKey:NSLocaleCountryCode];
+    
     // encoding URL from search text (UTF8)
     NSString *escapedSearchText = [searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *urlString = [NSString stringWithFormat:@"http://itunes.apple.com/search?term=%@&limit=200&entity=%@", escapedSearchText, categoryName];
+    NSString *urlString = [NSString stringWithFormat:@"http://itunes.apple.com/search?term=%@&limit=200&entity=%@&lang=%@&country=%@", escapedSearchText, categoryName, language, countryCode];
     
-    //NSLog(@"Index=%i\nCategory='%@'\nURL = '%@'", category, categoryName, urlString);
+    NSLog(@"URL = %@", urlString);
     
     return [NSURL URLWithString:urlString];
 }
