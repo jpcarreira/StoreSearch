@@ -277,7 +277,7 @@
 {
     // creating the label
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    label.text = @"Nothing found";
+    label.text = NSLocalizedString(@"Nothing found", @"nothing found label");
     label.backgroundColor = [UIColor clearColor];
     label.textColor = [UIColor whiteColor];
     
