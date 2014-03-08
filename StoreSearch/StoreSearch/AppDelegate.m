@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "SearchViewController.h"
+#import "DetailViewController.h"
 
 @implementation AppDelegate
 
@@ -34,7 +35,29 @@
     
     // assigning a root view controller to the window
     self.searchViewController = [[SearchViewController alloc] initWithNibName:@"SearchViewController" bundle:nil];
-    self.window.rootViewController = self.searchViewController;
+    
+    // if we're in an iPad we'll use the split view controller
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        self.splitViewController = [[UISplitViewController alloc] init];
+        
+        DetailViewController *detailViewController = [[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:nil];
+        
+        // a navigation controller is needed for the detail view controller
+        UINavigationController *detailNavigationController = [[UINavigationController alloc] initWithRootViewController:detailViewController];
+        
+        self.splitViewController.delegate = detailViewController;
+        
+        // in the array, 0 is the master pane and 1 is the detail pane
+        self.splitViewController.viewControllers = @[self.searchViewController, detailNavigationController];
+        
+        self.window.rootViewController = self.splitViewController;
+    }
+    // else it's an iphone or ipod touch
+    else
+    {
+        self.window.rootViewController = self.searchViewController;
+    }
     
     // making the window visible
     [self.window makeKeyAndVisible];

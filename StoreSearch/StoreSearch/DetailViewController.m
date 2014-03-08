@@ -23,6 +23,9 @@
 @property (nonatomic, weak) IBOutlet UILabel *genreLabel;
 @property (nonatomic, weak) IBOutlet UIButton *priceButton;
 
+// master pane (for iPad) in portrait orientation
+@property (nonatomic, strong) UIPopoverController *masterPopoverController;
+
 @end
 
 @implementation DetailViewController
@@ -248,10 +251,35 @@
 
 
 # pragma mark - CAAnimation delegates
+
 -(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
     // tell DetailsViewController that this controller is it's parent
     [self didMoveToParentViewController:self.parentViewController];
+}
+
+
+# pragma mark - UISplitViewControllerDelegate
+
+/* in portrait mode the master pane won't be visible all the time, only when the user taps a button
+    this brings the popover
+    the DetailViewController must be inside a UINavigationController so we can place the button (a UIBarButtonItem) into the navigation bar
+ */
+
+-(void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
+{
+    barButtonItem.title = NSLocalizedString(@"Search", @"Split-view master button");
+    [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
+    
+    // storing the popover object in the property so we can use it later
+    self.masterPopoverController = popoverController;
+}
+
+
+-(void)splitViewController:(UISplitViewController *)splitController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
+{
+    [self.navigationItem setLeftBarButtonItem:nil animated:YES];
+    self.masterPopoverController = nil;
 }
 
 @end

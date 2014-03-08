@@ -17,7 +17,7 @@ typedef NS_ENUM(NSUInteger, DetailViewControllerAnimationType)
     DetailViewControllerAnimationTypeFade
 };
 
-@interface DetailViewController : UIViewController
+@interface DetailViewController : UIViewController<UISplitViewControllerDelegate>
 
 // the SearchResult object should be put in this public interface as there is another object, the SearchViewController,
 // will need to see it to acess and modify it (unlike the IBOutlets)

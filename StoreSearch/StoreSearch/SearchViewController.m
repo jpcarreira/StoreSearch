@@ -99,14 +99,18 @@ static NSString * const loadingCellIdentifier = @"LoadingCell";
     // this is an override so we should call the superclass method
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     
-    // setting the correct controller to display according to orientation
-    if(UIInterfaceOrientationIsPortrait(toInterfaceOrientation))
+    // ensuring that the landscape view controller only occurs in the iPhone
+    if(UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad)
     {
-        [self hideLandscapeViewWithDuration:duration];
-    }
-    else
-    {
-        [self showLandscapeViewWithDuration:duration];
+        // setting the correct controller to display according to orientation
+        if(UIInterfaceOrientationIsPortrait(toInterfaceOrientation))
+        {
+            [self hideLandscapeViewWithDuration:duration];
+        }
+        else
+        {
+            [self showLandscapeViewWithDuration:duration];
+        }
     }
 }
 
